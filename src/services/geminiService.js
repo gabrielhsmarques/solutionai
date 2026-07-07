@@ -4,6 +4,22 @@ const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY)
 
 const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-lite' })
 
+// Helper function that retries the request up to 3 times if it fails
+async function generateWithRetry(prompt, retries = 3) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const result = await model.generateContent(prompt)
+      return result.response.text()
+    } catch (error) {
+      const isLastAttempt = i === retries - 1
+      if (isLastAttempt) throw error
+
+      // Waits 2 seconds before trying again
+      await new Promise(resolve => setTimeout(resolve, 2000))
+    }
+  }
+}
+
 export async function askEducator(question, userProfile) {
   const prompt = `
     You are a friendly and didactic financial educator.
@@ -19,8 +35,7 @@ export async function askEducator(question, userProfile) {
     
     Question: ${question}
   `
-  const result = await model.generateContent(prompt)
-  return result.response.text()
+  return generateWithRetry(prompt)
 }
 
 export async function generateDailyTip(userProfile) {
@@ -34,6 +49,5 @@ export async function generateDailyTip(userProfile) {
     - Total debt: $${userProfile.debt}
     - Goal: ${userProfile.goal}
   `
-  const result = await model.generateContent(prompt)
-  return result.response.text()
+  return generateWithRetry(prompt)
 }

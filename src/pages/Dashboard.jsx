@@ -4,7 +4,7 @@ import { useFinance } from '../context/FinanceContext'
 import { generateDailyTip } from '../services/geminiService'
 
 export default function Dashboard() {
-  const { profile } = useFinance()
+  const { profile, expenses } = useFinance()
   const navigate = useNavigate()
   const [dailyTip, setDailyTip] = useState('')
   const [loadingTip, setLoadingTip] = useState(true)
@@ -14,14 +14,12 @@ export default function Dashboard() {
       navigate('/')
       return
     }
-    
 
     async function fetchTip() {
       try {
         const tip = await generateDailyTip(profile)
         setDailyTip(tip)
       } catch (error) {
-        console.error('Gemini error:', error)
         setDailyTip('Keep track of your expenses daily — small habits build financial freedom.')
       } finally {
         setLoadingTip(false)
@@ -33,10 +31,28 @@ export default function Dashboard() {
 
   if (!profile) return null
 
+  // Base values from onboarding
   const income = parseFloat(profile.income) || 0
-  const debt = parseFloat(profile.debt) || 0
-  const monthlyDebtPayment = parseFloat((debt * 0.1).toFixed(2))
-  const leftover = parseFloat((income - monthlyDebtPayment).toFixed(2))
+  const totalDebt = parseFloat(profile.debt) || 0
+
+  // Calculates total spent this month from all expenses
+  const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0)
+
+  // Calculates how much debt has been paid via "Debt Payment" category
+  const debtPaid = expenses
+    .filter(e => e.category === 'Debt Payment')
+    .reduce((sum, e) => sum + e.amount, 0)
+
+  // Remaining debt after payments
+  const remainingDebt = Math.max(totalDebt - debtPaid, 0)
+
+  // Debt payoff progress percentage
+  const debtProgress = totalDebt > 0
+    ? Math.min((debtPaid / totalDebt) * 100, 100)
+    : 0
+
+  // Monthly leftover: income minus all expenses
+  const leftover = Math.max(income - totalExpenses, 0)
 
   return (
     <div style={styles.container}>
@@ -63,22 +79,72 @@ export default function Dashboard() {
         <div style={styles.cardsGrid}>
           <div style={styles.card}>
             <p style={styles.cardLabel}>Monthly Income</p>
-            <p style={styles.cardValue}>
-              ${income.toLocaleString()}
-            </p>
+            <p style={styles.cardValue}>${income.toLocaleString()}</p>
           </div>
           <div style={{ ...styles.card, ...styles.cardDanger }}>
-            <p style={styles.cardLabel}>Total Debt</p>
+            <p style={styles.cardLabel}>Total Spent</p>
             <p style={{ ...styles.cardValue, color: '#E24B4A' }}>
-              ${debt.toLocaleString()}
+              ${totalExpenses.toFixed(2)}
             </p>
           </div>
           <div style={{ ...styles.card, ...styles.cardSuccess }}>
-            <p style={styles.cardLabel}>Monthly Leftover</p>
+            <p style={styles.cardLabel}>Leftover</p>
             <p style={{ ...styles.cardValue, color: '#1D9E75' }}>
-              ${leftover.toLocaleString()}
+              ${leftover.toFixed(2)}
             </p>
           </div>
+        </div>
+
+        {/* Debt Progress Card */}
+        {totalDebt > 0 && (
+          <div style={styles.debtCard}>
+            <div style={styles.debtHeader}>
+              <p style={styles.sectionTitle}>💳 DEBT PAYOFF PROGRESS</p>
+              <p style={styles.debtPercent}>{debtProgress.toFixed(1)}%</p>
+            </div>
+
+            {/* Progress bar */}
+            <div style={styles.progressTrack}>
+              <div style={{
+                ...styles.progressFill,
+                width: `${debtProgress}%`
+              }} />
+            </div>
+
+            <div style={styles.debtNumbers}>
+              <span style={styles.debtPaid}>
+                Paid: ${debtPaid.toFixed(2)}
+              </span>
+              <span style={styles.debtRemaining}>
+                Remaining: ${remainingDebt.toFixed(2)}
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* Expenses Summary */}
+        <div style={styles.summaryCard}>
+          <p style={styles.sectionTitle}>📊 EXPENSES THIS MONTH</p>
+          {expenses.length === 0 ? (
+            <p style={styles.emptyText}>No expenses recorded yet.</p>
+          ) : (
+            <>
+              {/* Groups expenses by category and shows totals */}
+              {Object.entries(
+                expenses.reduce((acc, e) => {
+                  acc[e.category] = (acc[e.category] || 0) + e.amount
+                  return acc
+                }, {})
+              ).map(([category, amount]) => (
+                <div key={category} style={styles.categoryRow}>
+                  <span style={styles.categoryName}>{category}</span>
+                  <span style={styles.categoryAmount}>
+                    ${amount.toFixed(2)}
+                  </span>
+                </div>
+              ))}
+            </>
+          )}
         </div>
 
         {/* Goal */}
@@ -109,24 +175,15 @@ export default function Dashboard() {
         {/* Quick Access */}
         <p style={styles.sectionTitle}>QUICK ACCESS</p>
         <div style={styles.shortcutsGrid}>
-          <button
-            style={styles.shortcutBtn}
-            onClick={() => navigate('/expenses')}
-          >
+          <button style={styles.shortcutBtn} onClick={() => navigate('/expenses')}>
             <span style={styles.shortcutIcon}>💸</span>
             <span style={styles.shortcutLabel}>Expenses</span>
           </button>
-          <button
-            style={styles.shortcutBtn}
-            onClick={() => navigate('/chat')}
-          >
+          <button style={styles.shortcutBtn} onClick={() => navigate('/chat')}>
             <span style={styles.shortcutIcon}>🤖</span>
             <span style={styles.shortcutLabel}>AI Educator</span>
           </button>
-          <button
-            style={styles.shortcutBtn}
-            onClick={() => navigate('/investing')}
-          >
+          <button style={styles.shortcutBtn} onClick={() => navigate('/investing')}>
             <span style={styles.shortcutIcon}>📈</span>
             <span style={styles.shortcutLabel}>Investing</span>
           </button>
@@ -184,12 +241,8 @@ const styles = {
     padding: '14px 12px',
     boxShadow: '0 1px 4px rgba(0,0,0,0.06)'
   },
-  cardDanger: {
-    backgroundColor: '#fff5f5'
-  },
-  cardSuccess: {
-    backgroundColor: '#f0faf6'
-  },
+  cardDanger: { backgroundColor: '#fff5f5' },
+  cardSuccess: { backgroundColor: '#f0faf6' },
   cardLabel: {
     fontSize: '11px',
     color: '#888',
@@ -202,6 +255,79 @@ const styles = {
     fontWeight: '600',
     color: '#1a1a1a'
   },
+  debtCard: {
+    backgroundColor: '#fff',
+    borderRadius: '12px',
+    padding: '1rem 1.25rem',
+    marginBottom: '1rem',
+    boxShadow: '0 1px 4px rgba(0,0,0,0.06)'
+  },
+  debtHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '8px'
+  },
+  debtPercent: {
+    fontSize: '14px',
+    fontWeight: '600',
+    color: '#1D9E75'
+  },
+  progressTrack: {
+    height: '10px',
+    backgroundColor: '#f0f0f0',
+    borderRadius: '99px',
+    overflow: 'hidden',
+    marginBottom: '8px'
+  },
+  progressFill: {
+    height: '100%',
+    backgroundColor: '#1D9E75',
+    borderRadius: '99px',
+    transition: 'width 0.6s ease'
+  },
+  debtNumbers: {
+    display: 'flex',
+    justifyContent: 'space-between'
+  },
+  debtPaid: {
+    fontSize: '12px',
+    color: '#1D9E75',
+    fontWeight: '500'
+  },
+  debtRemaining: {
+    fontSize: '12px',
+    color: '#E24B4A',
+    fontWeight: '500'
+  },
+  summaryCard: {
+    backgroundColor: '#fff',
+    borderRadius: '12px',
+    padding: '1rem 1.25rem',
+    marginBottom: '1rem',
+    boxShadow: '0 1px 4px rgba(0,0,0,0.06)'
+  },
+  emptyText: {
+    fontSize: '13px',
+    color: '#aaa'
+  },
+  categoryRow: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingBottom: '8px',
+    marginBottom: '8px',
+    borderBottom: '1px solid #f5f5f5'
+  },
+  categoryName: {
+    fontSize: '14px',
+    color: '#555'
+  },
+  categoryAmount: {
+    fontSize: '14px',
+    fontWeight: '600',
+    color: '#1a1a1a'
+  },
   goalCard: {
     backgroundColor: '#ffffff',
     borderRadius: '12px',
@@ -209,30 +335,12 @@ const styles = {
     marginBottom: '1rem',
     boxShadow: '0 1px 4px rgba(0,0,0,0.06)'
   },
-  tipText: {
-    fontSize: '14px',
-    color: '#534AB7',
-    lineHeight: '1.6'
-  },
   tipCard: {
     backgroundColor: '#EEF2FF',
     borderRadius: '12px',
     padding: '1rem 1.25rem',
     marginBottom: '1.25rem',
     boxShadow: '0 1px 4px rgba(0,0,0,0.06)'
-  },
-  tipLoading: {
-    display: 'flex',
-    gap: '6px',
-    alignItems: 'center',
-    padding: '4px 0'
-  },
-  tipDot: {
-    width: '8px',
-    height: '8px',
-    borderRadius: '50%',
-    backgroundColor: '#534AB7',
-    animation: 'bounce 0.8s infinite alternate',
   },
   sectionTitle: {
     fontSize: '11px',
@@ -251,6 +359,24 @@ const styles = {
     color: '#888',
     marginTop: '6px'
   },
+  tipText: {
+    fontSize: '14px',
+    color: '#534AB7',
+    lineHeight: '1.6'
+  },
+  tipLoading: {
+    display: 'flex',
+    gap: '6px',
+    alignItems: 'center',
+    padding: '4px 0'
+  },
+  tipDot: {
+    width: '8px',
+    height: '8px',
+    borderRadius: '50%',
+    backgroundColor: '#534AB7',
+    animation: 'bounce 0.8s infinite alternate'
+  },
   shortcutsGrid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(3, 1fr)',
@@ -265,12 +391,9 @@ const styles = {
     border: '1px solid #eee',
     borderRadius: '12px',
     padding: '16px 8px',
-    cursor: 'pointer',
-    transition: 'all 0.2s'
+    cursor: 'pointer'
   },
-  shortcutIcon: {
-    fontSize: '24px'
-  },
+  shortcutIcon: { fontSize: '24px' },
   shortcutLabel: {
     fontSize: '12px',
     color: '#555',

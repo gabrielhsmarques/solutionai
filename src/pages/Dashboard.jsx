@@ -63,7 +63,7 @@ export default function Dashboard() {
     : 0
 
   // Leftover = total income - expenses - debt payments
-  const leftover = Math.max(totalIncome - totalExpenses - debtPaid, 0)
+  const leftover = totalIncome - totalExpenses - debtPaid
 
   function handleGoalSave() {
     if (!selectedGoal) return
@@ -120,10 +120,10 @@ export default function Dashboard() {
               ${totalExpenses.toFixed(2)}
             </p>
           </div>
-          <div style={{ ...styles.card, ...styles.cardSuccess }}>
+          <div style={{ ...styles.card, ...(leftover < 0 ? styles.cardDanger : styles.cardSuccess) }}>
             <p style={styles.cardLabel}>Leftover</p>
-            <p style={{ ...styles.cardValue, color: '#1D9E75' }}>
-              ${leftover.toFixed(2)}
+            <p style={{ ...styles.cardValue, color: leftover < 0 ? '#E24B4A' : '#1D9E75' }}>
+              {leftover < 0 ? '-' : ''}${Math.abs(leftover).toFixed(2)}
             </p>
           </div>
         </div>

@@ -2,8 +2,6 @@ import { useNavigate } from 'react-router-dom'
 import IncomeForm from '../components/IncomeForm'
 import IncomeList from '../components/IncomeList'
 
-// This page organizes income entries and debt payments
-// in one place, separate from regular expenses
 export default function Income() {
   const navigate = useNavigate()
 
@@ -11,22 +9,23 @@ export default function Income() {
     <div style={styles.container}>
       <div style={styles.content}>
 
-        {/* Header with back button */}
+        {/* Header */}
         <div style={styles.header}>
-          <button
-            onClick={() => navigate('/dashboard')}
-            style={styles.backBtn}
-          >
+          <button onClick={() => navigate('/dashboard')} style={styles.backBtn}>
             ← Back
           </button>
           <h1 style={styles.title}>Income & Payments</h1>
         </div>
 
-        {/* Form to add a new entry */}
-        <IncomeForm />
-
-        {/* List of all entries */}
-        <IncomeList />
+        {/* Two column layout on desktop */}
+        <div style={styles.twoColumns}>
+          <div>
+            <IncomeForm />
+          </div>
+          <div>
+            <IncomeList />
+          </div>
+        </div>
 
       </div>
     </div>
@@ -37,17 +36,16 @@ const styles = {
   container: {
     minHeight: '100vh',
     backgroundColor: '#f5f5f5',
-    padding: '1.5rem 1rem'
+    padding: '1.5rem 3rem'
   },
   content: {
-    maxWidth: '480px',
-    margin: '0 auto'
+    width: '100%'
   },
   header: {
     display: 'flex',
     alignItems: 'center',
     gap: '1rem',
-    marginBottom: '1.25rem'
+    marginBottom: '1.5rem'
   },
   backBtn: {
     fontSize: '14px',
@@ -59,8 +57,14 @@ const styles = {
     color: '#555'
   },
   title: {
-    fontSize: '20px',
+    fontSize: '24px',
     fontWeight: '600',
     color: '#1a1a1a'
+  },
+  twoColumns: {
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gap: '24px',
+    alignItems: 'start'
   }
 }

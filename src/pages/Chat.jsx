@@ -201,14 +201,14 @@ const styles = {
     flexDirection: 'column',
     height: '100vh',
     backgroundColor: '#f5f5f5',
-    maxWidth: '480px',
-    margin: '0 auto'
+    maxWidth: '100%',
+    margin: '0'
   },
   header: {
     display: 'flex',
     alignItems: 'center',
     gap: '1rem',
-    padding: '1rem 1.25rem',
+    padding: '1rem 3rem',
     backgroundColor: '#fff',
     borderBottom: '1px solid #eee',
     flexShrink: 0
@@ -234,7 +234,7 @@ const styles = {
   messagesArea: {
     flex: 1,
     overflowY: 'auto',
-    padding: '1.25rem'
+    padding: '1.5rem 3rem'
   },
   suggestions: {
     display: 'flex',
@@ -284,7 +284,7 @@ const styles = {
   inputArea: {
     display: 'flex',
     gap: '8px',
-    padding: '1rem 1.25rem',
+    padding: '1rem 3rem',
     backgroundColor: '#fff',
     borderTop: '1px solid #eee',
     flexShrink: 0

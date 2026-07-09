@@ -206,13 +206,12 @@ export default function Investing() {
 
 const styles = {
   container: {
-    minHeight: '100vh',
-    backgroundColor: '#f5f5f5',
-    padding: '1.5rem 1rem'
+  minHeight: '100vh',
+  backgroundColor: '#f5f5f5',
+  padding: '1.5rem 3rem'
   },
   content: {
-    maxWidth: '480px',
-    margin: '0 auto'
+    width: '100%'
   },
   header: {
     display: 'flex',

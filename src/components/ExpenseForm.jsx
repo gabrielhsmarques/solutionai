@@ -8,7 +8,6 @@ const categories = [
   'Transport',
   'Health',
   'Entertainment',
-  'Debt Payment',
   'Other'
 ]
 

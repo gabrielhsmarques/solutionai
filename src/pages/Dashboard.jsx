@@ -108,7 +108,7 @@ export default function Dashboard() {
           </button>
         </div>
 
-        {/* Metric Cards */}
+        {/* Metric Cards — full width */}
         <div style={styles.cardsGrid}>
           <div style={styles.card}>
             <p style={styles.cardLabel}>Total Income</p>
@@ -128,147 +128,95 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Debt Progress Card */}
-        {totalDebt > 0 && (
-          <div style={styles.debtCard}>
-            <div style={styles.debtHeader}>
-              <p style={styles.sectionTitle}>💳 DEBT PAYOFF PROGRESS</p>
-              <p style={styles.debtPercent}>{debtProgress.toFixed(1)}%</p>
-            </div>
+        {/* Two column layout */}
+        <div style={styles.twoColumns}>
 
-            {/* Progress bar */}
-            <div style={styles.progressTrack}>
-              <div style={{
-                ...styles.progressFill,
-                width: `${debtProgress}%`
-              }} />
-            </div>
+          {/* Left Column */}
+          <div style={styles.leftColumn}>
 
-            <div style={styles.debtNumbers}>
-              <span style={styles.debtPaid}>
-                Paid: ${debtPaid.toFixed(2)}
-              </span>
-              <span style={styles.debtRemaining}>
-                Remaining: ${remainingDebt.toFixed(2)}
-              </span>
-            </div>
-          </div>
-        )}
-
-        {/* Expenses Summary */}
-        <div style={styles.summaryCard}>
-          <p style={styles.sectionTitle}>📊 EXPENSES THIS MONTH</p>
-          {expenses.length === 0 ? (
-            <p style={styles.emptyText}>No expenses recorded yet.</p>
-          ) : (
-            <>
-              {/* Groups expenses by category and shows totals */}
-              {Object.entries(
-                expenses.reduce((acc, e) => {
-                  acc[e.category] = (acc[e.category] || 0) + e.amount
-                  return acc
-                }, {})
-              ).map(([category, amount]) => (
-                <div key={category} style={styles.categoryRow}>
-                  <span style={styles.categoryName}>{category}</span>
-                  <span style={styles.categoryAmount}>
-                    ${amount.toFixed(2)}
-                  </span>
+            {/* Debt Progress */}
+            {totalDebt > 0 && (
+              <div style={styles.sectionCard}>
+                <div style={styles.debtHeader}>
+                  <p style={styles.sectionTitle}>💳 DEBT PAYOFF PROGRESS</p>
+                  <p style={styles.debtPercent}>{debtProgress.toFixed(1)}%</p>
                 </div>
-              ))}
-            </>
-          )}
-        </div>
-
-        {/* Goal */}
-        <div style={styles.goalCard}>
-          <div style={styles.goalHeader}>
-            <p style={styles.sectionTitle}>YOUR GOAL</p>
-            <button
-              onClick={() => setEditingGoal(true)}
-              style={styles.editBtn}
-            >
-              ✏️ Change
-            </button>
-          </div>
-          <p style={styles.goalText}>🎯 {profile.goal}</p>
-          {profile.dependents > 0 && (
-            <p style={styles.dependentsText}>
-              👨‍👩‍👧 {profile.dependents} dependent(s)
-            </p>
-          )}
-        </div>
-
-        {/* Goal Edit Modal */}
-        {editingGoal && (
-          <div style={styles.modalOverlay}>
-            <div style={styles.modal}>
-              <h2 style={styles.modalTitle}>Change your goal</h2>
-              <p style={styles.modalSubtitle}>
-                Your expenses and profile will be kept.
-              </p>
-
-              {[
-                'Get out of debt',
-                'Build an emergency fund',
-                'Start investing',
-                'Organize my budget'
-              ].map(option => (
-                <button
-                  key={option}
-                  style={{
-                    ...styles.goalOption,
-                    ...(selectedGoal === option ? styles.goalOptionActive : {})
-                  }}
-                  onClick={() => setSelectedGoal(option)}
-                >
-                  {option}
-                </button>
-              ))}
-
-              {/* Shows debt input only when "Get out of debt" is selected */}
-              {selectedGoal === 'Get out of debt' && (
-                <div style={{ marginTop: '1rem' }}>
-                  <label style={styles.modalLabel}>
-                    Add new debt amount ($) — will be added to your current debt
-                  </label>
-                  <input
-                    type="number"
-                    placeholder="Ex: 5000"
-                    value={newDebt}
-                    onChange={e => setNewDebt(e.target.value)}
-                    style={styles.modalInput}
-                  />
+                <div style={styles.progressTrack}>
+                  <div style={{
+                    ...styles.progressFill,
+                    width: `${debtProgress}%`
+                  }} />
                 </div>
+                <div style={styles.debtNumbers}>
+                  <span style={styles.debtPaid}>Paid: ${debtPaid.toFixed(2)}</span>
+                  <span style={styles.debtRemaining}>Remaining: ${remainingDebt.toFixed(2)}</span>
+                </div>
+              </div>
+            )}
+
+            {/* Expenses Summary */}
+            <div style={styles.sectionCard}>
+              <p style={styles.sectionTitle}>📊 EXPENSES THIS MONTH</p>
+              {expenses.length === 0 ? (
+                <p style={styles.emptyText}>No expenses recorded yet.</p>
+              ) : (
+                Object.entries(
+                  expenses.reduce((acc, e) => {
+                    acc[e.category] = (acc[e.category] || 0) + e.amount
+                    return acc
+                  }, {})
+                ).map(([category, amount]) => (
+                  <div key={category} style={styles.categoryRow}>
+                    <span style={styles.categoryName}>{category}</span>
+                    <span style={styles.categoryAmount}>${amount.toFixed(2)}</span>
+                  </div>
+                ))
               )}
-
-              <button
-                onClick={handleGoalSave}
-                disabled={!selectedGoal}
-                style={{
-                  ...styles.confirmBtn,
-                  ...(!selectedGoal ? styles.buttonDisabled : {})
-                }}
-              >
-                Confirm
-              </button>
-
-              <button
-                onClick={() => {
-                  setEditingGoal(false)
-                  setSelectedGoal('')
-                  setNewDebt('')
-                }}
-                style={styles.cancelBtn}
-              >
-                Cancel
-              </button>
             </div>
-          </div>
-        )}
 
-        {/* Quick Access */}
-        <p style={styles.sectionTitle}>QUICK ACCESS</p>
+          </div>
+
+          {/* Right Column */}
+          <div style={styles.rightColumn}>
+
+            {/* Goal */}
+            <div style={styles.sectionCard}>
+              <div style={styles.goalHeader}>
+                <p style={styles.sectionTitle}>YOUR GOAL</p>
+                <button
+                  onClick={() => setEditingGoal(true)}
+                  style={styles.editBtn}
+                >
+                  ✏️ Change
+                </button>
+              </div>
+              <p style={styles.goalText}>🎯 {profile.goal}</p>
+              {profile.dependents > 0 && (
+                <p style={styles.dependentsText}>
+                  👨‍👩‍👧 {profile.dependents} dependent(s)
+                </p>
+              )}
+            </div>
+
+            {/* Daily Tip */}
+            <div style={styles.tipCard}>
+              <p style={styles.sectionTitle}>💡 DAILY TIP</p>
+              {loadingTip ? (
+                <div style={styles.tipLoading}>
+                  <div style={styles.tipDot} />
+                  <div style={{ ...styles.tipDot, animationDelay: '0.2s' }} />
+                  <div style={{ ...styles.tipDot, animationDelay: '0.4s' }} />
+                </div>
+              ) : (
+                <p style={styles.tipText}>{dailyTip}</p>
+              )}
+            </div>
+
+          </div>
+        </div>
+
+        {/* Quick Access — full width */}
+        <p style={{ ...styles.sectionTitle, marginTop: '0.5rem' }}>QUICK ACCESS</p>
         <div style={styles.shortcutsGrid}>
           <button style={styles.shortcutBtn} onClick={() => navigate('/expenses')}>
             <span style={styles.shortcutIcon}>💸</span>
@@ -289,6 +237,73 @@ export default function Dashboard() {
         </div>
 
       </div>
+
+      {/* Goal Edit Modal */}
+      {editingGoal && (
+        <div style={styles.modalOverlay}>
+          <div style={styles.modal}>
+            <h2 style={styles.modalTitle}>Change your goal</h2>
+            <p style={styles.modalSubtitle}>
+              Your expenses and profile will be kept.
+            </p>
+
+            {[
+              'Get out of debt',
+              'Build an emergency fund',
+              'Start investing',
+              'Organize my budget'
+            ].map(option => (
+              <button
+                key={option}
+                style={{
+                  ...styles.goalOption,
+                  ...(selectedGoal === option ? styles.goalOptionActive : {})
+                }}
+                onClick={() => setSelectedGoal(option)}
+              >
+                {option}
+              </button>
+            ))}
+
+            {selectedGoal === 'Get out of debt' && (
+              <div style={{ marginTop: '1rem' }}>
+                <label style={styles.modalLabel}>
+                  Add new debt amount ($) — will be added to your current debt
+                </label>
+                <input
+                  type="number"
+                  placeholder="Ex: 5000"
+                  value={newDebt}
+                  onChange={e => setNewDebt(e.target.value)}
+                  style={styles.modalInput}
+                />
+              </div>
+            )}
+
+            <button
+              onClick={handleGoalSave}
+              disabled={!selectedGoal}
+              style={{
+                ...styles.confirmBtn,
+                ...(!selectedGoal ? styles.buttonDisabled : {})
+              }}
+            >
+              Confirm
+            </button>
+
+            <button
+              onClick={() => {
+                setEditingGoal(false)
+                setSelectedGoal('')
+                setNewDebt('')
+              }}
+              style={styles.cancelBtn}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -297,17 +312,16 @@ const styles = {
   container: {
     minHeight: '100vh',
     backgroundColor: '#f5f5f5',
-    padding: '1.5rem 1rem'
+    padding: '1.5rem 3rem'
   },
   content: {
-    maxWidth: '480px',
-    margin: '0 auto'
+    width: '100%'
   },
   header: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: '1.25rem'
+    marginBottom: '1.5rem'
   },
   greeting: {
     fontSize: '20px',
@@ -331,7 +345,7 @@ const styles = {
   cardsGrid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(3, 1fr)',
-    gap: '10px',
+    gap: '16px',
     marginBottom: '1rem'
   },
   card: {
@@ -478,7 +492,7 @@ const styles = {
   },
   shortcutsGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(3, 1fr)',
+    gridTemplateColumns: 'repeat(4, 1fr)',
     gap: '10px'
   },
   shortcutBtn: {
@@ -603,6 +617,33 @@ const styles = {
   borderRadius: '8px',
   cursor: 'pointer',
   color: '#534AB7'
-}
+  },
+  twoColumns: {
+  display: 'grid',
+  gridTemplateColumns: '1fr 1fr',
+  gap: '16px',
+  marginBottom: '1.5rem'
+  },
+  leftColumn: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '16px'
+  },
+  rightColumn: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '16px'
+  },
+  sectionCard: {
+    backgroundColor: '#fff',
+    borderRadius: '12px',
+    padding: '1.25rem',
+    boxShadow: '0 1px 4px rgba(0,0,0,0.06)'
+  },
+  emptyText: {
+    fontSize: '13px',
+    color: '#aaa'
+  }
+
 
 }

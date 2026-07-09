@@ -4,10 +4,13 @@ import { useFinance } from '../context/FinanceContext'
 import { generateDailyTip } from '../services/geminiService'
 
 export default function Dashboard() {
-  const { profile, expenses } = useFinance()
+  const { profile, expenses, incomes, saveProfile } = useFinance()
   const navigate = useNavigate()
   const [dailyTip, setDailyTip] = useState('')
   const [loadingTip, setLoadingTip] = useState(true)
+  const [editingGoal, setEditingGoal] = useState(false)
+  const [selectedGoal, setSelectedGoal] = useState('')
+  const [newDebt, setNewDebt] = useState('')
 
   useEffect(() => {
     if (!profile) {
@@ -35,13 +38,21 @@ export default function Dashboard() {
   const income = parseFloat(profile.income) || 0
   const totalDebt = parseFloat(profile.debt) || 0
 
-  // Calculates total spent this month from all expenses
+  // Extra incomes registered by the user (excluding debt payments)
+  const extraIncome = incomes
+    .filter(i => i.category !== 'Debt Payment')
+    .reduce((sum, i) => sum + i.amount, 0)
+
+  // Total real income = fixed salary + extra incomes
+  const totalIncome = income + extraIncome
+
+  // Calculates total spent — only real expenses, no debt payments
   const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0)
 
-  // Calculates how much debt has been paid via "Debt Payment" category
-  const debtPaid = expenses
-    .filter(e => e.category === 'Debt Payment')
-    .reduce((sum, e) => sum + e.amount, 0)
+  // Calculates how much debt has been paid via income "Debt Payment" category
+  const debtPaid = incomes
+    .filter(i => i.category === 'Debt Payment')
+    .reduce((sum, i) => sum + i.amount, 0)
 
   // Remaining debt after payments
   const remainingDebt = Math.max(totalDebt - debtPaid, 0)
@@ -51,8 +62,30 @@ export default function Dashboard() {
     ? Math.min((debtPaid / totalDebt) * 100, 100)
     : 0
 
-  // Monthly leftover: income minus all expenses
-  const leftover = Math.max(income - totalExpenses, 0)
+  // Leftover = total income - expenses - debt payments
+  const leftover = Math.max(totalIncome - totalExpenses - debtPaid, 0)
+
+  function handleGoalSave() {
+    if (!selectedGoal) return
+
+    // If the new goal is debt-related, ADD the new debt to the existing one
+    // instead of replacing it — the app handles the math, not the user
+    const currentDebt = parseFloat(profile.debt) || 0
+    const additionalDebt = parseFloat(newDebt) || 0
+
+    const updatedProfile = {
+      ...profile,
+      goal: selectedGoal,
+      ...(selectedGoal === 'Get out of debt' && newDebt
+        ? { debt: (currentDebt + additionalDebt).toFixed(2) }
+        : {})
+    }
+
+    saveProfile(updatedProfile)
+    setEditingGoal(false)
+    setSelectedGoal('')
+    setNewDebt('')
+  }
 
   return (
     <div style={styles.container}>
@@ -78,8 +111,8 @@ export default function Dashboard() {
         {/* Metric Cards */}
         <div style={styles.cardsGrid}>
           <div style={styles.card}>
-            <p style={styles.cardLabel}>Monthly Income</p>
-            <p style={styles.cardValue}>${income.toLocaleString()}</p>
+            <p style={styles.cardLabel}>Total Income</p>
+            <p style={styles.cardValue}>${totalIncome.toLocaleString()}</p>
           </div>
           <div style={{ ...styles.card, ...styles.cardDanger }}>
             <p style={styles.cardLabel}>Total Spent</p>
@@ -149,7 +182,15 @@ export default function Dashboard() {
 
         {/* Goal */}
         <div style={styles.goalCard}>
-          <p style={styles.sectionTitle}>YOUR GOAL</p>
+          <div style={styles.goalHeader}>
+            <p style={styles.sectionTitle}>YOUR GOAL</p>
+            <button
+              onClick={() => setEditingGoal(true)}
+              style={styles.editBtn}
+            >
+              ✏️ Change
+            </button>
+          </div>
           <p style={styles.goalText}>🎯 {profile.goal}</p>
           {profile.dependents > 0 && (
             <p style={styles.dependentsText}>
@@ -158,19 +199,73 @@ export default function Dashboard() {
           )}
         </div>
 
-        {/* Daily Tip */}
-        <div style={styles.tipCard}>
-          <p style={styles.sectionTitle}>💡 DAILY TIP</p>
-          {loadingTip ? (
-            <div style={styles.tipLoading}>
-              <div style={styles.tipDot} />
-              <div style={{ ...styles.tipDot, animationDelay: '0.2s' }} />
-              <div style={{ ...styles.tipDot, animationDelay: '0.4s' }} />
+        {/* Goal Edit Modal */}
+        {editingGoal && (
+          <div style={styles.modalOverlay}>
+            <div style={styles.modal}>
+              <h2 style={styles.modalTitle}>Change your goal</h2>
+              <p style={styles.modalSubtitle}>
+                Your expenses and profile will be kept.
+              </p>
+
+              {[
+                'Get out of debt',
+                'Build an emergency fund',
+                'Start investing',
+                'Organize my budget'
+              ].map(option => (
+                <button
+                  key={option}
+                  style={{
+                    ...styles.goalOption,
+                    ...(selectedGoal === option ? styles.goalOptionActive : {})
+                  }}
+                  onClick={() => setSelectedGoal(option)}
+                >
+                  {option}
+                </button>
+              ))}
+
+              {/* Shows debt input only when "Get out of debt" is selected */}
+              {selectedGoal === 'Get out of debt' && (
+                <div style={{ marginTop: '1rem' }}>
+                  <label style={styles.modalLabel}>
+                    Add new debt amount ($) — will be added to your current debt
+                  </label>
+                  <input
+                    type="number"
+                    placeholder="Ex: 5000"
+                    value={newDebt}
+                    onChange={e => setNewDebt(e.target.value)}
+                    style={styles.modalInput}
+                  />
+                </div>
+              )}
+
+              <button
+                onClick={handleGoalSave}
+                disabled={!selectedGoal}
+                style={{
+                  ...styles.confirmBtn,
+                  ...(!selectedGoal ? styles.buttonDisabled : {})
+                }}
+              >
+                Confirm
+              </button>
+
+              <button
+                onClick={() => {
+                  setEditingGoal(false)
+                  setSelectedGoal('')
+                  setNewDebt('')
+                }}
+                style={styles.cancelBtn}
+              >
+                Cancel
+              </button>
             </div>
-          ) : (
-            <p style={styles.tipText}>{dailyTip}</p>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* Quick Access */}
         <p style={styles.sectionTitle}>QUICK ACCESS</p>
@@ -178,6 +273,10 @@ export default function Dashboard() {
           <button style={styles.shortcutBtn} onClick={() => navigate('/expenses')}>
             <span style={styles.shortcutIcon}>💸</span>
             <span style={styles.shortcutLabel}>Expenses</span>
+          </button>
+          <button style={styles.shortcutBtn} onClick={() => navigate('/income')}>
+            <span style={styles.shortcutIcon}>💰</span>
+            <span style={styles.shortcutLabel}>Income</span>
           </button>
           <button style={styles.shortcutBtn} onClick={() => navigate('/chat')}>
             <span style={styles.shortcutIcon}>🤖</span>
@@ -398,5 +497,112 @@ const styles = {
     fontSize: '12px',
     color: '#555',
     fontWeight: '500'
-  }
+  },
+  modalOverlay: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 100,
+    padding: '1rem'
+  },
+  modal: {
+    backgroundColor: '#fff',
+    borderRadius: '16px',
+    padding: '1.5rem',
+    width: '100%',
+    maxWidth: '380px',
+    boxShadow: '0 8px 32px rgba(0,0,0,0.12)'
+  },
+  modalTitle: {
+    fontSize: '18px',
+    fontWeight: '600',
+    color: '#1a1a1a',
+    marginBottom: '4px'
+  },
+  modalSubtitle: {
+    fontSize: '13px',
+    color: '#888',
+    marginBottom: '1.25rem'
+  },
+  goalOption: {
+    display: 'block',
+    width: '100%',
+    padding: '12px 16px',
+    marginBottom: '8px',
+    fontSize: '14px',
+    textAlign: 'left',
+    backgroundColor: '#f9f9f9',
+    border: '1px solid #eee',
+    borderRadius: '10px',
+    cursor: 'pointer',
+    color: '#1a1a1a'
+  },
+  goalOptionActive: {
+    backgroundColor: '#EEF2FF',
+    borderColor: '#534AB7',
+    color: '#534AB7',
+    fontWeight: '500'
+  },
+  modalLabel: {
+    display: 'block',
+    fontSize: '12px',
+    fontWeight: '500',
+    color: '#888',
+    textTransform: 'uppercase',
+    letterSpacing: '0.04em',
+    marginBottom: '6px'
+  },
+  modalInput: {
+    width: '100%',
+    padding: '10px 14px',
+    fontSize: '15px',
+    border: '1px solid #ddd',
+    borderRadius: '8px',
+    outline: 'none',
+    marginBottom: '1rem'
+  },
+  confirmBtn: {
+    display: 'block',
+    width: '100%',
+    padding: '12px',
+    marginBottom: '8px',
+    fontSize: '14px',
+    fontWeight: '500',
+    backgroundColor: '#534AB7',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '10px',
+    cursor: 'pointer'
+  },
+  buttonDisabled: {
+    backgroundColor: '#ccc',
+    cursor: 'not-allowed'
+  },
+  cancelBtn: {
+    display: 'block',
+    width: '100%',
+    padding: '12px',
+    fontSize: '14px',
+    backgroundColor: 'transparent',
+    border: '1px solid #ddd',
+    borderRadius: '10px',
+    cursor: 'pointer',
+    color: '#888'
+  },
+  editBtn: {
+  fontSize: '12px',
+  padding: '4px 10px',
+  backgroundColor: 'transparent',
+  border: '1px solid #ddd',
+  borderRadius: '8px',
+  cursor: 'pointer',
+  color: '#534AB7'
+}
+
 }

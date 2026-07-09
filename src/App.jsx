@@ -4,6 +4,7 @@ import Dashboard from './pages/Dashboard.jsx'
 import Expenses from './pages/Expenses.jsx'
 import Chat from './pages/Chat.jsx'
 import Investing from './pages/investing.jsx'
+import Income from './pages/Income.jsx'
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/expenses" element={<Expenses />} />
         <Route path="/chat" element={<Chat />} />
         <Route path="/investing" element={<Investing />} />
+        <Route path="/income" element={<Income />} />
       </Routes>
     </BrowserRouter>
   )

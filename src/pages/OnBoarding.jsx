@@ -66,28 +66,39 @@ export default function Onboarding() {
   }
 
   return (
-    <div style={styles.container}>
-      <div style={styles.card}>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+      <div className="bg-white rounded-2xl p-8 w-full max-w-[480px] shadow-lg">
 
-        <div style={styles.progressTrack}>
-          <div style={{ ...styles.progressBar, width: `${progress}%` }} />
+        {/* Progress bar */}
+        <div className="h-1.5 bg-gray-200 rounded-full mb-2 overflow-hidden">
+          <div
+            className="h-full bg-primary rounded-full transition-all duration-300"
+            style={{ width: `${progress}%` }}
+          />
         </div>
-        <p style={styles.stepText}>
+        <p className="text-[13px] text-gray-400 mb-6">
           Step {currentStep + 1} of {questions.length}
         </p>
 
-        <h2 style={styles.question}>{question.label}</h2>
+        {/* Question */}
+        <h2 className="text-xl font-medium text-gray-900 mb-5 leading-snug">
+          {question.label}
+        </h2>
 
+        {/* Input — text/number or select options */}
         {question.type === 'select' ? (
-          <div style={styles.optionsGrid}>
+          <div className="grid grid-cols-2 gap-2.5 mb-5">
             {question.options.map(option => (
               <button
                 key={option}
                 onClick={() => setCurrentValue(option)}
-                style={{
-                  ...styles.optionBtn,
-                  ...(currentValue === option ? styles.optionSelected : {})
-                }}
+                className={`
+                  p-3 text-sm rounded-lg border text-center transition-all
+                  ${currentValue === option
+                    ? 'bg-primary text-white border-primary'
+                    : 'bg-white text-gray-900 border-gray-300 hover:border-primary'
+                  }
+                `}
               >
                 {option}
               </button>
@@ -99,17 +110,25 @@ export default function Onboarding() {
             placeholder={question.placeholder}
             value={currentValue}
             onChange={e => setCurrentValue(e.target.value)}
-            style={styles.input}
+            className="
+              w-full px-4 py-3 text-base rounded-lg mb-5
+              border border-gray-300 outline-none
+              focus:border-primary transition-colors
+            "
           />
         )}
 
+        {/* Next / Finish button */}
         <button
           onClick={handleNext}
           disabled={!currentValue}
-          style={{
-            ...styles.nextButton,
-            ...(!currentValue ? styles.buttonDisabled : {})
-          }}
+          className={`
+            w-full py-3.5 text-base font-medium rounded-lg transition-colors
+            ${currentValue
+              ? 'bg-primary text-white cursor-pointer hover:bg-primary-dark'
+              : 'bg-gray-300 text-white cursor-not-allowed'
+            }
+          `}
         >
           {currentStep + 1 === questions.length ? 'Finish' : 'Next'}
         </button>
@@ -117,93 +136,4 @@ export default function Onboarding() {
       </div>
     </div>
   )
-}
-
-const styles = {
-  container: {
-    minHeight: '100vh',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#f5f5f5',
-    padding: '1rem'
-  },
-  card: {
-    backgroundColor: '#ffffff',
-    borderRadius: '16px',
-    padding: '2rem',
-    width: '100%',
-    maxWidth: '480px',
-    boxShadow: '0 2px 12px rgba(0,0,0,0.08)'
-  },
-  progressTrack: {
-    height: '6px',
-    backgroundColor: '#e0e0e0',
-    borderRadius: '99px',
-    marginBottom: '8px',
-    overflow: 'hidden'
-  },
-  progressBar: {
-    height: '100%',
-    backgroundColor: '#534AB7',
-    borderRadius: '99px',
-    transition: 'width 0.4s ease'
-  },
-  stepText: {
-    fontSize: '13px',
-    color: '#888',
-    marginBottom: '1.5rem'
-  },
-  question: {
-    fontSize: '20px',
-    fontWeight: '500',
-    color: '#1a1a1a',
-    marginBottom: '1.25rem',
-    lineHeight: '1.4'
-  },
-  input: {
-    width: '100%',
-    padding: '12px 16px',
-    fontSize: '16px',
-    border: '1px solid #ddd',
-    borderRadius: '8px',
-    marginBottom: '1.25rem',
-    outline: 'none'
-  },
-  optionsGrid: {
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
-    gap: '10px',
-    marginBottom: '1.25rem'
-  },
-  optionBtn: {
-    padding: '12px',
-    fontSize: '14px',
-    border: '1px solid #ddd',
-    borderRadius: '8px',
-    backgroundColor: '#fff',
-    cursor: 'pointer',
-    textAlign: 'center',
-    transition: 'all 0.2s'
-  },
-  optionSelected: {
-    backgroundColor: '#534AB7',
-    color: '#fff',
-    borderColor: '#534AB7'
-  },
-  nextButton: {
-    width: '100%',
-    padding: '14px',
-    fontSize: '16px',
-    fontWeight: '500',
-    backgroundColor: '#534AB7',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '8px',
-    cursor: 'pointer'
-  },
-  buttonDisabled: {
-    backgroundColor: '#ccc',
-    cursor: 'not-allowed'
-  }
 }

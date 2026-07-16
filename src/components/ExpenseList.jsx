@@ -15,9 +15,9 @@ export default function ExpenseList() {
 
   if (expenses.length === 0) {
     return (
-      <div className="text-center py-8 bg-white rounded-xl shadow-card">
-        <p className="text-[15px] font-medium text-gray-900 mb-1">No expenses yet.</p>
-        <p className="text-[13px] text-gray-400">Add your first expense above!</p>
+      <div className="text-center py-8 bg-surface border border-border rounded-xl shadow-card">
+        <p className="text-[15px] font-medium text-text mb-1">No expenses yet.</p>
+        <p className="text-[13px] text-text-muted">Add your first expense above!</p>
       </div>
     )
   }
@@ -34,17 +34,17 @@ export default function ExpenseList() {
       {[...expenses].reverse().map(expense => (
         <div
           key={expense.id}
-          className="flex justify-between items-center bg-white rounded-xl p-4 mb-2 shadow-card"
+          className="flex justify-between items-center bg-surface border border-border rounded-xl p-4 mb-2 shadow-card"
         >
           <div className="flex items-center gap-3">
             <span className="text-2xl">
               {categoryEmoji[expense.category] || '📦'}
             </span>
             <div>
-              <p className="text-[15px] font-medium text-gray-900">
+              <p className="text-[15px] font-medium text-text">
                 {expense.description}
               </p>
-              <p className="text-xs text-gray-400">
+              <p className="text-xs text-text-muted">
                 {expense.category} · {expense.date}
               </p>
             </div>

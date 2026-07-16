@@ -66,22 +66,22 @@ export default function Onboarding() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
-      <div className="bg-white rounded-2xl p-8 w-full max-w-[480px] shadow-lg">
+    <div className="min-h-screen flex items-center justify-center bg-bg p-4">
+      <div className="bg-surface border border-border rounded-2xl p-8 w-full max-w-[480px] shadow-modal">
 
         {/* Progress bar */}
-        <div className="h-1.5 bg-gray-200 rounded-full mb-2 overflow-hidden">
+        <div className="h-1.5 bg-border rounded-full mb-2 overflow-hidden">
           <div
             className="h-full bg-primary rounded-full transition-all duration-300"
             style={{ width: `${progress}%` }}
           />
         </div>
-        <p className="text-[13px] text-gray-400 mb-6">
+        <p className="text-[13px] text-text-muted mb-6">
           Step {currentStep + 1} of {questions.length}
         </p>
 
         {/* Question */}
-        <h2 className="text-xl font-medium text-gray-900 mb-5 leading-snug">
+        <h2 className="text-xl font-medium text-text mb-5 leading-snug">
           {question.label}
         </h2>
 
@@ -95,8 +95,8 @@ export default function Onboarding() {
                 className={`
                   p-3 text-sm rounded-lg border text-center transition-all
                   ${currentValue === option
-                    ? 'bg-primary text-white border-primary'
-                    : 'bg-white text-gray-900 border-gray-300 hover:border-primary'
+                    ? 'bg-primary text-black border-primary font-medium'
+                    : 'bg-bg text-text border-border hover:border-primary'
                   }
                 `}
               >
@@ -112,7 +112,8 @@ export default function Onboarding() {
             onChange={e => setCurrentValue(e.target.value)}
             className="
               w-full px-4 py-3 text-base rounded-lg mb-5
-              border border-gray-300 outline-none
+              bg-bg border border-border text-text outline-none
+              placeholder:text-text-muted/50
               focus:border-primary transition-colors
             "
           />
@@ -125,8 +126,8 @@ export default function Onboarding() {
           className={`
             w-full py-3.5 text-base font-medium rounded-lg transition-colors
             ${currentValue
-              ? 'bg-primary text-white cursor-pointer hover:bg-primary-dark'
-              : 'bg-gray-300 text-white cursor-not-allowed'
+              ? 'bg-primary text-black cursor-pointer hover:bg-primary-dark'
+              : 'bg-border text-text-muted cursor-not-allowed'
             }
           `}
         >

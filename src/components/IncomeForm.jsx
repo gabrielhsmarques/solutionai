@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useFinance } from '../context/FinanceContext'
 
-// Available categories for income and debt payment entries
 const categories = [
   'Fixed Salary',
   'Freelance',
@@ -35,99 +34,50 @@ export default function IncomeForm() {
   }
 
   return (
-    <div style={styles.container}>
-      <h2 style={styles.title}>New Entry</h2>
+    <div className="bg-white rounded-xl p-5 shadow-card mb-4">
+      <h2 className="text-base font-semibold text-gray-900 mb-4">New Entry</h2>
 
-      {/* Description input */}
-      <label style={styles.label}>Description</label>
+      <label className="block text-xs font-medium text-gray-400 uppercase tracking-wide mb-1">
+        Description
+      </label>
       <input
         type="text"
         placeholder="Ex: Freelance project"
         value={description}
         onChange={e => setDescription(e.target.value)}
-        style={styles.input}
+        className="w-full px-3.5 py-2.5 text-[15px] rounded-lg border border-gray-300 outline-none focus:border-primary mb-4 transition-colors"
       />
 
-      {/* Amount input */}
-      <label style={styles.label}>Amount ($)</label>
+      <label className="block text-xs font-medium text-gray-400 uppercase tracking-wide mb-1">
+        Amount ($)
+      </label>
       <input
         type="number"
         placeholder="Ex: 300"
         value={amount}
         onChange={e => setAmount(e.target.value)}
-        style={styles.input}
+        className="w-full px-3.5 py-2.5 text-[15px] rounded-lg border border-gray-300 outline-none focus:border-primary mb-4 transition-colors"
       />
 
-      {/* Category select */}
-      <label style={styles.label}>Category</label>
+      <label className="block text-xs font-medium text-gray-400 uppercase tracking-wide mb-1">
+        Category
+      </label>
       <select
         value={category}
         onChange={e => setCategory(e.target.value)}
-        style={styles.select}
+        className="w-full px-3.5 py-2.5 text-[15px] rounded-lg border border-gray-300 outline-none focus:border-primary mb-4 bg-white"
       >
         {categories.map(cat => (
           <option key={cat} value={cat}>{cat}</option>
         ))}
       </select>
 
-      <button onClick={handleSubmit} style={styles.button}>
+      <button
+        onClick={handleSubmit}
+        className="w-full py-3 text-[15px] font-medium bg-success text-white rounded-lg hover:opacity-90 transition-opacity"
+      >
         Save Entry
       </button>
     </div>
   )
-}
-
-const styles = {
-  container: {
-    backgroundColor: '#fff',
-    borderRadius: '12px',
-    padding: '1.25rem',
-    boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
-    marginBottom: '1rem'
-  },
-  title: {
-    fontSize: '16px',
-    fontWeight: '600',
-    color: '#1a1a1a',
-    marginBottom: '1rem'
-  },
-  label: {
-    display: 'block',
-    fontSize: '12px',
-    fontWeight: '500',
-    color: '#888',
-    textTransform: 'uppercase',
-    letterSpacing: '0.04em',
-    marginBottom: '4px'
-  },
-  input: {
-    width: '100%',
-    padding: '10px 14px',
-    fontSize: '15px',
-    border: '1px solid #ddd',
-    borderRadius: '8px',
-    marginBottom: '1rem',
-    outline: 'none'
-  },
-  select: {
-    width: '100%',
-    padding: '10px 14px',
-    fontSize: '15px',
-    border: '1px solid #ddd',
-    borderRadius: '8px',
-    marginBottom: '1rem',
-    outline: 'none',
-    backgroundColor: '#fff'
-  },
-  button: {
-    width: '100%',
-    padding: '12px',
-    fontSize: '15px',
-    fontWeight: '500',
-    backgroundColor: '#1D9E75',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '8px',
-    cursor: 'pointer'
-  }
 }

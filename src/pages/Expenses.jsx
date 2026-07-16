@@ -1,59 +1,19 @@
-import { useNavigate } from 'react-router-dom'
 import ExpenseForm from '../components/ExpenseForm'
 import ExpenseList from '../components/ExpenseList'
-import PageLayout from '../components/PageLayout'
 
 export default function Expenses() {
-  const navigate = useNavigate()
-
   return (
-    <div style={styles.container}>
-      <div style={styles.content}>
+    <div className="w-full">
+      <h1 className="text-2xl font-semibold text-gray-900 mb-6">My Expenses</h1>
 
-        {/* Header */}
-        <div style={styles.header}>
-          <h1 style={styles.title}>My Expenses</h1>
+      <div className="grid grid-cols-2 gap-6 items-start max-md:grid-cols-1">
+        <div>
+          <ExpenseForm />
         </div>
-
-        {/* Two column layout on desktop */}
-        <div style={styles.twoColumns}>
-          <div>
-            <ExpenseForm />
-          </div>
-          <div>
-            <ExpenseList />
-          </div>
+        <div>
+          <ExpenseList />
         </div>
-
       </div>
     </div>
   )
-}
-
-const styles = {
-  container: {
-    minHeight: '100vh',
-    backgroundColor: '#f5f5f5',
-    padding: '1.5rem 3rem'
-  },
-  content: {
-    width: '100%'
-  },
-  header: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '1rem',
-    marginBottom: '1.5rem'
-  },
-  title: {
-    fontSize: '24px',
-    fontWeight: '600',
-    color: '#1a1a1a'
-  },
-  twoColumns: {
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
-    gap: '24px',
-    alignItems: 'start'
-  }
 }

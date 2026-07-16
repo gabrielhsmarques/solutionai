@@ -1,78 +1,28 @@
-// This component renders a single chat message.
-// It changes its appearance based on whether
-// the message was sent by the user or the AI.
 export default function ChatMessage({ message }) {
   const isUser = message.role === 'user'
 
   return (
-    <div style={{
-      ...styles.wrapper,
-      justifyContent: isUser ? 'flex-end' : 'flex-start'
-    }}>
-      {/* AI avatar — only shown for AI messages */}
+    <div className={`flex items-end gap-2 mb-3 ${isUser ? 'justify-end' : 'justify-start'}`}>
+
       {!isUser && (
-        <div style={styles.avatar}>🤖</div>
+        <div className="text-xl flex-shrink-0">🤖</div>
       )}
 
-      <div style={{
-        ...styles.bubble,
-        ...(isUser ? styles.userBubble : styles.aiBubble)
-      }}>
-        <p style={{
-          ...styles.text,
-          color: isUser ? '#fff' : '#1a1a1a'
-        }}>
+      <div className={`
+        max-w-[75%] px-3.5 py-2.5 rounded-2xl shadow-card
+        ${isUser ? 'bg-primary rounded-br-sm' : 'bg-white rounded-bl-sm'}
+      `}>
+        <p className={`text-sm leading-relaxed m-0 ${isUser ? 'text-white' : 'text-gray-900'}`}>
           {message.content}
         </p>
-        <p style={{
-          ...styles.time,
-          color: isUser ? 'rgba(255,255,255,0.6)' : '#aaa',
-          textAlign: isUser ? 'right' : 'left'
-        }}>
+        <p className={`text-[11px] mt-1 ${isUser ? 'text-white/60 text-right' : 'text-gray-300 text-left'}`}>
           {message.time}
         </p>
       </div>
 
-      {/* User avatar — only shown for user messages */}
       {isUser && (
-        <div style={styles.avatar}>👤</div>
+        <div className="text-xl flex-shrink-0">👤</div>
       )}
     </div>
   )
-}
-
-const styles = {
-  wrapper: {
-    display: 'flex',
-    alignItems: 'flex-end',
-    gap: '8px',
-    marginBottom: '12px'
-  },
-  avatar: {
-    fontSize: '20px',
-    flexShrink: 0
-  },
-  bubble: {
-    maxWidth: '75%',
-    padding: '10px 14px',
-    borderRadius: '16px',
-    boxShadow: '0 1px 4px rgba(0,0,0,0.06)'
-  },
-  userBubble: {
-    backgroundColor: '#534AB7',
-    borderBottomRightRadius: '4px'
-  },
-  aiBubble: {
-    backgroundColor: '#fff',
-    borderBottomLeftRadius: '4px'
-  },
-  text: {
-    fontSize: '14px',
-    lineHeight: '1.6',
-    margin: 0
-  },
-  time: {
-    fontSize: '11px',
-    marginTop: '4px'
-  }
 }

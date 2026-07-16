@@ -14,8 +14,8 @@ async function generateWithRetry(prompt, retries = 3) {
       const isLastAttempt = i === retries - 1
       if (isLastAttempt) throw error
 
-      // Waits 2 seconds before trying again
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      // Waits 5 seconds before trying again
+      await new Promise(resolve => setTimeout(resolve, 5000))
     }
   }
 }

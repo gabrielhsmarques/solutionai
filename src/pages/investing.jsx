@@ -4,8 +4,6 @@ import { useFinance } from '../context/FinanceContext'
 import { askEducator } from '../services/geminiService'
 import InvestingCard from '../components/InvestingCard'
 
-// Content library organized by financial stage.
-// Each stage maps to a user goal from the onboarding.
 const contentLibrary = {
   debt: [
     {
@@ -101,7 +99,6 @@ const contentLibrary = {
   ]
 }
 
-// Maps the user goal from onboarding to a content stage
 function getStageFromGoal(goal) {
   if (!goal) return 'budget'
   const lower = goal.toLowerCase()
@@ -111,7 +108,6 @@ function getStageFromGoal(goal) {
   return 'budget'
 }
 
-// Returns a label and color for each stage
 function getStageInfo(stage) {
   const info = {
     debt: { label: '🔴 Focus: Get out of debt first', color: '#E24B4A' },
@@ -128,14 +124,12 @@ export default function Investing() {
   const [geminiInsight, setGeminiInsight] = useState('')
   const [loadingInsight, setLoadingInsight] = useState(true)
 
-  // Redirects to onboarding if there is no profile
   useEffect(() => {
     if (!profile) {
       navigate('/')
       return
     }
 
-    // Asks Gemini for a personalized next step recommendation
     async function fetchInsight() {
       try {
         const question = `Based on my profile, what is the single most important financial action I should take this month? Be specific and encouraging. Max 3 sentences.`
@@ -158,105 +152,44 @@ export default function Investing() {
   const content = contentLibrary[stage]
 
   return (
-    <div style={styles.container}>
-      <div style={styles.content}>
+    <div className="w-full">
+      <h1 className="text-2xl font-semibold text-gray-900 mb-6">Investing</h1>
 
-        {/* Header */}
-        <div style={styles.header}>
-          <h1 style={styles.title}>Investing</h1>
-        </div>
+      {/* User stage card */}
+      <div
+        className="bg-white rounded-xl p-5 mb-4 shadow-card border-l-4"
+        style={{ borderLeftColor: stageInfo.color }}
+      >
+        <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-1.5">
+          Your Current Stage
+        </p>
+        <p className="text-[15px] font-semibold" style={{ color: stageInfo.color }}>
+          {stageInfo.label}
+        </p>
+      </div>
 
-        {/* User stage card */}
-        <div style={{
-          ...styles.stageCard,
-          borderLeft: `4px solid ${stageInfo.color}`
-        }}>
-          <p style={styles.stageLabel}>YOUR CURRENT STAGE</p>
-          <p style={{ ...styles.stageText, color: stageInfo.color }}>
-            {stageInfo.label}
-          </p>
-        </div>
+      {/* Gemini insight */}
+      <div className="bg-primary-light rounded-xl p-5 mb-6 shadow-card">
+        <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-2.5">
+          🤖 Your Personalized Next Step
+        </p>
+        {loadingInsight ? (
+          <p className="text-sm text-primary">Generating your recommendation...</p>
+        ) : (
+          <p className="text-sm text-primary leading-relaxed">{geminiInsight}</p>
+        )}
+      </div>
 
-        {/* Gemini personalized insight */}
-        <div style={styles.insightCard}>
-          <p style={styles.sectionTitle}>🤖 YOUR PERSONALIZED NEXT STEP</p>
-          {loadingInsight ? (
-            <p style={styles.loadingText}>Generating your recommendation...</p>
-          ) : (
-            <p style={styles.insightText}>{geminiInsight}</p>
-          )}
-        </div>
-
-        {/* Educational content cards */}
-        <p style={styles.sectionTitle}>📚 RECOMMENDED FOR YOU</p>
+      {/* Educational content */}
+      <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-2.5">
+        📚 Recommended For You
+      </p>
+      <div className="grid grid-cols-2 gap-3 max-md:grid-cols-1">
         {content.map((item, index) => (
           <InvestingCard key={index} {...item} />
         ))}
-
       </div>
+
     </div>
   )
-}
-
-const styles = {
-  container: {
-  minHeight: '100vh',
-  backgroundColor: '#f5f5f5',
-  padding: '1.5rem 3rem'
-  },
-  content: {
-    width: '100%'
-  },
-  header: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '1rem',
-    marginBottom: '1.25rem'
-  },
-  title: {
-    fontSize: '20px',
-    fontWeight: '600',
-    color: '#1a1a1a'
-  },
-  stageCard: {
-    backgroundColor: '#fff',
-    borderRadius: '12px',
-    padding: '1rem 1.25rem',
-    marginBottom: '1rem',
-    boxShadow: '0 1px 4px rgba(0,0,0,0.06)'
-  },
-  stageLabel: {
-    fontSize: '11px',
-    fontWeight: '600',
-    color: '#888',
-    letterSpacing: '0.06em',
-    marginBottom: '6px'
-  },
-  stageText: {
-    fontSize: '15px',
-    fontWeight: '600'
-  },
-  insightCard: {
-    backgroundColor: '#EEF2FF',
-    borderRadius: '12px',
-    padding: '1rem 1.25rem',
-    marginBottom: '1.25rem',
-    boxShadow: '0 1px 4px rgba(0,0,0,0.06)'
-  },
-  sectionTitle: {
-    fontSize: '11px',
-    fontWeight: '600',
-    color: '#888',
-    letterSpacing: '0.06em',
-    marginBottom: '10px'
-  },
-  loadingText: {
-    fontSize: '14px',
-    color: '#534AB7'
-  },
-  insightText: {
-    fontSize: '14px',
-    color: '#534AB7',
-    lineHeight: '1.6'
-  }
 }

@@ -2,25 +2,33 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #534AB7;
-  --color-primary-light: #EEF2FF;
-  --color-primary-dark: #3d3690;
+  --color-primary: #D4AF37;
+  --color-primary-light: rgba(212, 175, 55, 0.12);
+  --color-primary-dark: #B8942E;
 
-  --color-success: #1D9E75;
-  --color-success-light: #f0faf6;
+  --color-success: #2ECC8F;
+  --color-success-light: rgba(46, 204, 143, 0.12);
 
-  --color-danger: #E24B4A;
-  --color-danger-light: #fff5f5;
+  --color-danger: #F0605F;
+  --color-danger-light: rgba(240, 96, 95, 0.12);
 
-  --color-warning: #BA7517;
-  --color-warning-light: #fffbeb;
+  --color-warning: #E0A93E;
+  --color-warning-light: rgba(224, 169, 62, 0.12);
 
-  --shadow-card: 0 1px 4px rgba(0, 0, 0, 0.06);
-  --shadow-modal: 0 8px 32px rgba(0, 0, 0, 0.12);
+  --color-bg: #0D0D0F;
+  --color-surface: #1A1A1D;
+  --color-border: #2A2A2E;
+  --color-text: #F5F5F0;
+  --color-text-muted: #A0A0A0;
+
+  --shadow-card: 0 1px 4px rgba(0, 0, 0, 0.4);
+  --shadow-modal: 0 8px 32px rgba(0, 0, 0, 0.6);
 }
 
 body {
   font-family: 'Inter', system-ui, sans-serif;
+  background-color: #0D0D0F;
+  color: #F5F5F0;
 }
 
 @keyframes bounce {

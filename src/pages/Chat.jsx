@@ -8,8 +8,6 @@ export default function Chat() {
   const { profile } = useFinance()
   const navigate = useNavigate()
 
-  // messages stores the full conversation history
-  // We start with a welcome message from the AI
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -19,23 +17,14 @@ export default function Chat() {
     }
   ])
 
-  // Controls the input field value
   const [input, setInput] = useState('')
-
-  // Controls the loading state while waiting for Gemini
   const [loading, setLoading] = useState(false)
-
-  // This ref points to the bottom of the message list
-  // so we can auto-scroll when a new message arrives
   const bottomRef = useRef(null)
 
-  // Redirects to onboarding if there is no profile
   useEffect(() => {
     if (!profile) navigate('/')
   }, [profile, navigate])
 
-  // Auto-scrolls to the latest message every time
-  // the messages array changes
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
@@ -48,10 +37,8 @@ export default function Chat() {
   }
 
   async function handleSend() {
-    // Prevents sending empty messages or sending while loading
     if (!input.trim() || loading) return
 
-    // Builds the user message object
     const userMessage = {
       id: Date.now(),
       role: 'user',
@@ -59,27 +46,20 @@ export default function Chat() {
       time: getCurrentTime()
     }
 
-    // Adds user message to the conversation
     setMessages(prev => [...prev, userMessage])
     setInput('')
     setLoading(true)
 
     try {
-      // Sends the question to Gemini along with the user profile
       const response = await askEducator(input.trim(), profile)
-
-      // Builds the AI response message object
       const aiMessage = {
         id: Date.now() + 1,
         role: 'ai',
         content: response,
         time: getCurrentTime()
       }
-
       setMessages(prev => [...prev, aiMessage])
     } catch (error) {
-      // Shows a fallback message if Gemini fails
-      console.error('Gemini chat error:', error)
       const errorMessage = {
         id: Date.now() + 1,
         role: 'ai',
@@ -92,7 +72,6 @@ export default function Chat() {
     }
   }
 
-  // Allows sending the message by pressing Enter
   function handleKeyDown(e) {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
@@ -100,7 +79,6 @@ export default function Chat() {
     }
   }
 
-  // Suggestion chips — quick questions the user can tap
   const suggestions = [
     'How do I get out of debt faster?',
     'What is an emergency fund?',
@@ -109,27 +87,24 @@ export default function Chat() {
   ]
 
   return (
-    <div style={styles.container}>
+    <div className="flex flex-col h-screen bg-gray-100">
 
-      {/* Fixed header */}
-      <div style={styles.header}>
-        <h1 style={styles.title}>AI Educator</h1>
-        <p style={styles.subtitle}>Powered by Gemini</p>
+      {/* Header */}
+      <div className="px-8 py-4 bg-white border-b border-gray-100 flex-shrink-0 max-md:px-4">
+        <h1 className="text-base font-semibold text-gray-900">AI Educator</h1>
+        <p className="text-xs text-gray-400">Powered by Gemini</p>
       </div>
 
-      {/* Scrollable message area */}
-      <div style={styles.messagesArea}>
+      {/* Scrollable messages area */}
+      <div className="flex-1 overflow-y-auto px-8 py-5 max-md:px-4">
 
-        {/* Suggestion chips — shown only at the start */}
         {messages.length === 1 && (
-          <div style={styles.suggestions}>
+          <div className="flex flex-col gap-2 mb-5">
             {suggestions.map(suggestion => (
               <button
                 key={suggestion}
-                style={styles.chip}
-                onClick={() => {
-                  setInput(suggestion)
-                }}
+                onClick={() => setInput(suggestion)}
+                className="text-left px-3.5 py-2.5 bg-white border border-gray-300 rounded-xl text-[13px] text-primary hover:bg-primary-light transition-colors"
               >
                 {suggestion}
               </button>
@@ -137,47 +112,47 @@ export default function Chat() {
           </div>
         )}
 
-        {/* Renders each message using the ChatMessage component */}
         {messages.map(message => (
           <ChatMessage key={message.id} message={message} />
         ))}
 
-        {/* Loading indicator while waiting for Gemini */}
         {loading && (
-          <div style={styles.loadingWrapper}>
-            <div style={styles.avatar}>🤖</div>
-            <div style={styles.loadingBubble}>
-              <div style={styles.loadingDots}>
-                <div style={styles.dot} />
-                <div style={{ ...styles.dot, animationDelay: '0.2s' }} />
-                <div style={{ ...styles.dot, animationDelay: '0.4s' }} />
+          <div className="flex items-end gap-2 mb-3">
+            <div className="text-xl flex-shrink-0">🤖</div>
+            <div className="bg-white rounded-2xl rounded-bl-sm px-4 py-3 shadow-card">
+              <div className="flex gap-1.5 items-center">
+                <div className="w-[7px] h-[7px] rounded-full bg-primary animate-bounce2" />
+                <div className="w-[7px] h-[7px] rounded-full bg-primary animate-bounce2 [animation-delay:0.2s]" />
+                <div className="w-[7px] h-[7px] rounded-full bg-primary animate-bounce2 [animation-delay:0.4s]" />
               </div>
             </div>
           </div>
         )}
 
-        {/* Invisible element at the bottom for auto-scroll */}
         <div ref={bottomRef} />
       </div>
 
-      {/* Fixed input area at the bottom */}
-      <div style={styles.inputArea}>
+      {/* Fixed input area */}
+      <div className="flex gap-2 px-8 py-4 bg-white border-t border-gray-100 flex-shrink-0 max-md:px-4">
         <input
           type="text"
           placeholder="Ask your financial question..."
           value={input}
           onChange={e => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          style={styles.input}
           disabled={loading}
+          className="flex-1 px-3.5 py-2.5 text-[15px] rounded-xl border border-gray-300 outline-none bg-gray-50 focus:border-primary transition-colors"
         />
         <button
           onClick={handleSend}
           disabled={!input.trim() || loading}
-          style={{
-            ...styles.sendBtn,
-            ...(!input.trim() || loading ? styles.sendBtnDisabled : {})
-          }}
+          className={`
+            w-11 h-11 rounded-xl text-lg flex items-center justify-center transition-colors
+            ${!input.trim() || loading
+              ? 'bg-gray-300 text-white cursor-not-allowed'
+              : 'bg-primary text-white hover:bg-primary-dark cursor-pointer'
+            }
+          `}
         >
           ➤
         </button>
@@ -185,117 +160,4 @@ export default function Chat() {
 
     </div>
   )
-}
-
-const styles = {
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    height: '100vh',
-    backgroundColor: '#f5f5f5',
-    maxWidth: '100%',
-    margin: '0'
-  },
-  header: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '1rem',
-    padding: '1rem 3rem',
-    backgroundColor: '#fff',
-    borderBottom: '1px solid #eee',
-    flexShrink: 0
-  },
-  title: {
-    fontSize: '16px',
-    fontWeight: '600',
-    color: '#1a1a1a'
-  },
-  subtitle: {
-    fontSize: '12px',
-    color: '#888'
-  },
-  messagesArea: {
-    flex: 1,
-    overflowY: 'auto',
-    padding: '1.5rem 3rem'
-  },
-  suggestions: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '8px',
-    marginBottom: '1.25rem'
-  },
-  chip: {
-    padding: '10px 14px',
-    backgroundColor: '#fff',
-    border: '1px solid #ddd',
-    borderRadius: '12px',
-    fontSize: '13px',
-    color: '#534AB7',
-    cursor: 'pointer',
-    textAlign: 'left'
-  },
-  loadingWrapper: {
-    display: 'flex',
-    alignItems: 'flex-end',
-    gap: '8px',
-    marginBottom: '12px'
-  },
-  avatar: {
-    fontSize: '20px',
-    flexShrink: 0
-  },
-  loadingBubble: {
-    backgroundColor: '#fff',
-    borderRadius: '16px',
-    borderBottomLeftRadius: '4px',
-    padding: '12px 16px',
-    boxShadow: '0 1px 4px rgba(0,0,0,0.06)'
-  },
-  loadingDots: {
-    display: 'flex',
-    gap: '5px',
-    alignItems: 'center'
-  },
-  dot: {
-    width: '7px',
-    height: '7px',
-    borderRadius: '50%',
-    backgroundColor: '#534AB7',
-    animation: 'bounce 0.8s infinite alternate'
-  },
-  inputArea: {
-    display: 'flex',
-    gap: '8px',
-    padding: '1rem 3rem',
-    backgroundColor: '#fff',
-    borderTop: '1px solid #eee',
-    flexShrink: 0
-  },
-  input: {
-    flex: 1,
-    padding: '10px 14px',
-    fontSize: '15px',
-    border: '1px solid #ddd',
-    borderRadius: '12px',
-    outline: 'none',
-    backgroundColor: '#f9f9f9'
-  },
-  sendBtn: {
-    width: '44px',
-    height: '44px',
-    borderRadius: '12px',
-    backgroundColor: '#534AB7',
-    color: '#fff',
-    border: 'none',
-    fontSize: '18px',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  sendBtnDisabled: {
-    backgroundColor: '#ccc',
-    cursor: 'not-allowed'
-  }
 }

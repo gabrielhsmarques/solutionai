@@ -11,9 +11,6 @@ export default function Income() {
 
         {/* Header */}
         <div style={styles.header}>
-          <button onClick={() => navigate('/dashboard')} style={styles.backBtn}>
-            ← Back
-          </button>
           <h1 style={styles.title}>Income & Payments</h1>
         </div>
 
@@ -46,15 +43,6 @@ const styles = {
     alignItems: 'center',
     gap: '1rem',
     marginBottom: '1.5rem'
-  },
-  backBtn: {
-    fontSize: '14px',
-    padding: '6px 12px',
-    backgroundColor: 'transparent',
-    border: '1px solid #ddd',
-    borderRadius: '8px',
-    cursor: 'pointer',
-    color: '#555'
   },
   title: {
     fontSize: '24px',

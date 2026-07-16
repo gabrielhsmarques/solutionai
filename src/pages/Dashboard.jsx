@@ -97,15 +97,6 @@ export default function Dashboard() {
             <h1 style={styles.greeting}>Hello, {profile.name}! 👋</h1>
             <p style={styles.subtitle}>Here is your financial summary</p>
           </div>
-          <button
-            onClick={() => {
-              localStorage.clear()
-              navigate('/')
-            }}
-            style={styles.resetBtn}
-          >
-            Reset
-          </button>
         </div>
 
         {/* Metric Cards — full width */}
@@ -332,15 +323,6 @@ const styles = {
     fontSize: '13px',
     color: '#888',
     marginTop: '2px'
-  },
-  resetBtn: {
-    fontSize: '12px',
-    padding: '6px 12px',
-    backgroundColor: 'transparent',
-    border: '1px solid #ddd',
-    borderRadius: '8px',
-    cursor: 'pointer',
-    color: '#888'
   },
   cardsGrid: {
     display: 'grid',

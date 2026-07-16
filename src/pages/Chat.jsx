@@ -113,16 +113,8 @@ export default function Chat() {
 
       {/* Fixed header */}
       <div style={styles.header}>
-        <button
-          onClick={() => navigate('/dashboard')}
-          style={styles.backBtn}
-        >
-          ← Back
-        </button>
-        <div>
-          <h1 style={styles.title}>AI Educator</h1>
-          <p style={styles.subtitle}>Powered by Gemini</p>
-        </div>
+        <h1 style={styles.title}>AI Educator</h1>
+        <p style={styles.subtitle}>Powered by Gemini</p>
       </div>
 
       {/* Scrollable message area */}
@@ -212,15 +204,6 @@ const styles = {
     backgroundColor: '#fff',
     borderBottom: '1px solid #eee',
     flexShrink: 0
-  },
-  backBtn: {
-    fontSize: '14px',
-    padding: '6px 12px',
-    backgroundColor: 'transparent',
-    border: '1px solid #ddd',
-    borderRadius: '8px',
-    cursor: 'pointer',
-    color: '#555'
   },
   title: {
     fontSize: '16px',

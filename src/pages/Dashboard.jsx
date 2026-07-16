@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useFinance } from '../context/FinanceContext'
 import { generateDailyTip } from '../services/geminiService'
 
+
 export default function Dashboard() {
   const { profile, expenses, incomes, saveProfile } = useFinance()
   const navigate = useNavigate()
@@ -88,214 +89,216 @@ export default function Dashboard() {
   }
 
   return (
-    <div style={styles.container}>
-      <div style={styles.content}>
+    <>
+      <div style={styles.container}>
+        <div style={styles.content}>
 
-        {/* Header */}
-        <div style={styles.header}>
-          <div>
-            <h1 style={styles.greeting}>Hello, {profile.name}! 👋</h1>
-            <p style={styles.subtitle}>Here is your financial summary</p>
+          {/* Header */}
+          <div style={styles.header}>
+            <div>
+              <h1 style={styles.greeting}>Hello, {profile.name}! 👋</h1>
+              <p style={styles.subtitle}>Here is your financial summary</p>
+            </div>
           </div>
-        </div>
 
-        {/* Metric Cards — full width */}
-        <div style={styles.cardsGrid}>
-          <div style={styles.card}>
-            <p style={styles.cardLabel}>Total Income</p>
-            <p style={styles.cardValue}>${totalIncome.toLocaleString()}</p>
+          {/* Metric Cards — full width */}
+          <div style={styles.cardsGrid}>
+            <div style={styles.card}>
+              <p style={styles.cardLabel}>Total Income</p>
+              <p style={styles.cardValue}>${totalIncome.toLocaleString()}</p>
+            </div>
+            <div style={{ ...styles.card, ...styles.cardDanger }}>
+              <p style={styles.cardLabel}>Total Spent</p>
+              <p style={{ ...styles.cardValue, color: '#E24B4A' }}>
+                ${totalExpenses.toFixed(2)}
+              </p>
+            </div>
+            <div style={{ ...styles.card, ...(leftover < 0 ? styles.cardDanger : styles.cardSuccess) }}>
+              <p style={styles.cardLabel}>Leftover</p>
+              <p style={{ ...styles.cardValue, color: leftover < 0 ? '#E24B4A' : '#1D9E75' }}>
+                {leftover < 0 ? '-' : ''}${Math.abs(leftover).toFixed(2)}
+              </p>
+            </div>
           </div>
-          <div style={{ ...styles.card, ...styles.cardDanger }}>
-            <p style={styles.cardLabel}>Total Spent</p>
-            <p style={{ ...styles.cardValue, color: '#E24B4A' }}>
-              ${totalExpenses.toFixed(2)}
-            </p>
-          </div>
-          <div style={{ ...styles.card, ...(leftover < 0 ? styles.cardDanger : styles.cardSuccess) }}>
-            <p style={styles.cardLabel}>Leftover</p>
-            <p style={{ ...styles.cardValue, color: leftover < 0 ? '#E24B4A' : '#1D9E75' }}>
-              {leftover < 0 ? '-' : ''}${Math.abs(leftover).toFixed(2)}
-            </p>
-          </div>
-        </div>
 
-        {/* Two column layout */}
-        <div style={styles.twoColumns}>
+          {/* Two column layout */}
+          <div style={styles.twoColumns}>
 
-          {/* Left Column */}
-          <div style={styles.leftColumn}>
+            {/* Left Column */}
+            <div style={styles.leftColumn}>
 
-            {/* Debt Progress */}
-            {totalDebt > 0 && (
-              <div style={styles.sectionCard}>
-                <div style={styles.debtHeader}>
-                  <p style={styles.sectionTitle}>💳 DEBT PAYOFF PROGRESS</p>
-                  <p style={styles.debtPercent}>{debtProgress.toFixed(1)}%</p>
-                </div>
-                <div style={styles.progressTrack}>
-                  <div style={{
-                    ...styles.progressFill,
-                    width: `${debtProgress}%`
-                  }} />
-                </div>
-                <div style={styles.debtNumbers}>
-                  <span style={styles.debtPaid}>Paid: ${debtPaid.toFixed(2)}</span>
-                  <span style={styles.debtRemaining}>Remaining: ${remainingDebt.toFixed(2)}</span>
-                </div>
-              </div>
-            )}
-
-            {/* Expenses Summary */}
-            <div style={styles.sectionCard}>
-              <p style={styles.sectionTitle}>📊 EXPENSES THIS MONTH</p>
-              {expenses.length === 0 ? (
-                <p style={styles.emptyText}>No expenses recorded yet.</p>
-              ) : (
-                Object.entries(
-                  expenses.reduce((acc, e) => {
-                    acc[e.category] = (acc[e.category] || 0) + e.amount
-                    return acc
-                  }, {})
-                ).map(([category, amount]) => (
-                  <div key={category} style={styles.categoryRow}>
-                    <span style={styles.categoryName}>{category}</span>
-                    <span style={styles.categoryAmount}>${amount.toFixed(2)}</span>
+              {/* Debt Progress */}
+              {totalDebt > 0 && (
+                <div style={styles.sectionCard}>
+                  <div style={styles.debtHeader}>
+                    <p style={styles.sectionTitle}>💳 DEBT PAYOFF PROGRESS</p>
+                    <p style={styles.debtPercent}>{debtProgress.toFixed(1)}%</p>
                   </div>
-                ))
-              )}
-            </div>
-
-          </div>
-
-          {/* Right Column */}
-          <div style={styles.rightColumn}>
-
-            {/* Goal */}
-            <div style={styles.sectionCard}>
-              <div style={styles.goalHeader}>
-                <p style={styles.sectionTitle}>YOUR GOAL</p>
-                <button
-                  onClick={() => setEditingGoal(true)}
-                  style={styles.editBtn}
-                >
-                  ✏️ Change
-                </button>
-              </div>
-              <p style={styles.goalText}>🎯 {profile.goal}</p>
-              {profile.dependents > 0 && (
-                <p style={styles.dependentsText}>
-                  👨‍👩‍👧 {profile.dependents} dependent(s)
-                </p>
-              )}
-            </div>
-
-            {/* Daily Tip */}
-            <div style={styles.tipCard}>
-              <p style={styles.sectionTitle}>💡 DAILY TIP</p>
-              {loadingTip ? (
-                <div style={styles.tipLoading}>
-                  <div style={styles.tipDot} />
-                  <div style={{ ...styles.tipDot, animationDelay: '0.2s' }} />
-                  <div style={{ ...styles.tipDot, animationDelay: '0.4s' }} />
+                  <div style={styles.progressTrack}>
+                    <div style={{
+                      ...styles.progressFill,
+                      width: `${debtProgress}%`
+                    }} />
+                  </div>
+                  <div style={styles.debtNumbers}>
+                    <span style={styles.debtPaid}>Paid: ${debtPaid.toFixed(2)}</span>
+                    <span style={styles.debtRemaining}>Remaining: ${remainingDebt.toFixed(2)}</span>
+                  </div>
                 </div>
-              ) : (
-                <p style={styles.tipText}>{dailyTip}</p>
               )}
+
+              {/* Expenses Summary */}
+              <div style={styles.sectionCard}>
+                <p style={styles.sectionTitle}>📊 EXPENSES THIS MONTH</p>
+                {expenses.length === 0 ? (
+                  <p style={styles.emptyText}>No expenses recorded yet.</p>
+                ) : (
+                  Object.entries(
+                    expenses.reduce((acc, e) => {
+                      acc[e.category] = (acc[e.category] || 0) + e.amount
+                      return acc
+                    }, {})
+                  ).map(([category, amount]) => (
+                    <div key={category} style={styles.categoryRow}>
+                      <span style={styles.categoryName}>{category}</span>
+                      <span style={styles.categoryAmount}>${amount.toFixed(2)}</span>
+                    </div>
+                  ))
+                )}
+              </div>
+
             </div>
 
-          </div>
-        </div>
+            {/* Right Column */}
+            <div style={styles.rightColumn}>
 
-        {/* Quick Access — full width */}
-        <p style={{ ...styles.sectionTitle, marginTop: '0.5rem' }}>QUICK ACCESS</p>
-        <div style={styles.shortcutsGrid}>
-          <button style={styles.shortcutBtn} onClick={() => navigate('/expenses')}>
-            <span style={styles.shortcutIcon}>💸</span>
-            <span style={styles.shortcutLabel}>Expenses</span>
-          </button>
-          <button style={styles.shortcutBtn} onClick={() => navigate('/income')}>
-            <span style={styles.shortcutIcon}>💰</span>
-            <span style={styles.shortcutLabel}>Income</span>
-          </button>
-          <button style={styles.shortcutBtn} onClick={() => navigate('/chat')}>
-            <span style={styles.shortcutIcon}>🤖</span>
-            <span style={styles.shortcutLabel}>AI Educator</span>
-          </button>
-          <button style={styles.shortcutBtn} onClick={() => navigate('/investing')}>
-            <span style={styles.shortcutIcon}>📈</span>
-            <span style={styles.shortcutLabel}>Investing</span>
-          </button>
-        </div>
-
-      </div>
-
-      {/* Goal Edit Modal */}
-      {editingGoal && (
-        <div style={styles.modalOverlay}>
-          <div style={styles.modal}>
-            <h2 style={styles.modalTitle}>Change your goal</h2>
-            <p style={styles.modalSubtitle}>
-              Your expenses and profile will be kept.
-            </p>
-
-            {[
-              'Get out of debt',
-              'Build an emergency fund',
-              'Start investing',
-              'Organize my budget'
-            ].map(option => (
-              <button
-                key={option}
-                style={{
-                  ...styles.goalOption,
-                  ...(selectedGoal === option ? styles.goalOptionActive : {})
-                }}
-                onClick={() => setSelectedGoal(option)}
-              >
-                {option}
-              </button>
-            ))}
-
-            {selectedGoal === 'Get out of debt' && (
-              <div style={{ marginTop: '1rem' }}>
-                <label style={styles.modalLabel}>
-                  Add new debt amount ($) — will be added to your current debt
-                </label>
-                <input
-                  type="number"
-                  placeholder="Ex: 5000"
-                  value={newDebt}
-                  onChange={e => setNewDebt(e.target.value)}
-                  style={styles.modalInput}
-                />
+              {/* Goal */}
+              <div style={styles.sectionCard}>
+                <div style={styles.goalHeader}>
+                  <p style={styles.sectionTitle}>YOUR GOAL</p>
+                  <button
+                    onClick={() => setEditingGoal(true)}
+                    style={styles.editBtn}
+                  >
+                    ✏️ Change
+                  </button>
+                </div>
+                <p style={styles.goalText}>🎯 {profile.goal}</p>
+                {profile.dependents > 0 && (
+                  <p style={styles.dependentsText}>
+                    👨‍👩‍👧 {profile.dependents} dependent(s)
+                  </p>
+                )}
               </div>
-            )}
 
-            <button
-              onClick={handleGoalSave}
-              disabled={!selectedGoal}
-              style={{
-                ...styles.confirmBtn,
-                ...(!selectedGoal ? styles.buttonDisabled : {})
-              }}
-            >
-              Confirm
+              {/* Daily Tip */}
+              <div style={styles.tipCard}>
+                <p style={styles.sectionTitle}>💡 DAILY TIP</p>
+                {loadingTip ? (
+                  <div style={styles.tipLoading}>
+                    <div style={styles.tipDot} />
+                    <div style={{ ...styles.tipDot, animationDelay: '0.2s' }} />
+                    <div style={{ ...styles.tipDot, animationDelay: '0.4s' }} />
+                  </div>
+                ) : (
+                  <p style={styles.tipText}>{dailyTip}</p>
+                )}
+              </div>
+
+            </div>
+          </div>
+
+          {/* Quick Access — full width */}
+          <p style={{ ...styles.sectionTitle, marginTop: '0.5rem' }}>QUICK ACCESS</p>
+          <div style={styles.shortcutsGrid}>
+            <button style={styles.shortcutBtn} onClick={() => navigate('/expenses')}>
+              <span style={styles.shortcutIcon}>💸</span>
+              <span style={styles.shortcutLabel}>Expenses</span>
             </button>
-
-            <button
-              onClick={() => {
-                setEditingGoal(false)
-                setSelectedGoal('')
-                setNewDebt('')
-              }}
-              style={styles.cancelBtn}
-            >
-              Cancel
+            <button style={styles.shortcutBtn} onClick={() => navigate('/income')}>
+              <span style={styles.shortcutIcon}>💰</span>
+              <span style={styles.shortcutLabel}>Income</span>
+            </button>
+            <button style={styles.shortcutBtn} onClick={() => navigate('/chat')}>
+              <span style={styles.shortcutIcon}>🤖</span>
+              <span style={styles.shortcutLabel}>AI Educator</span>
+            </button>
+            <button style={styles.shortcutBtn} onClick={() => navigate('/investing')}>
+              <span style={styles.shortcutIcon}>📈</span>
+              <span style={styles.shortcutLabel}>Investing</span>
             </button>
           </div>
+
         </div>
-      )}
-    </div>
+
+        {/* Goal Edit Modal */}
+        {editingGoal && (
+          <div style={styles.modalOverlay}>
+            <div style={styles.modal}>
+              <h2 style={styles.modalTitle}>Change your goal</h2>
+              <p style={styles.modalSubtitle}>
+                Your expenses and profile will be kept.
+              </p>
+
+              {[
+                'Get out of debt',
+                'Build an emergency fund',
+                'Start investing',
+                'Organize my budget'
+              ].map(option => (
+                <button
+                  key={option}
+                  style={{
+                    ...styles.goalOption,
+                    ...(selectedGoal === option ? styles.goalOptionActive : {})
+                  }}
+                  onClick={() => setSelectedGoal(option)}
+                >
+                  {option}
+                </button>
+              ))}
+
+              {selectedGoal === 'Get out of debt' && (
+                <div style={{ marginTop: '1rem' }}>
+                  <label style={styles.modalLabel}>
+                    Add new debt amount ($) — will be added to your current debt
+                  </label>
+                  <input
+                    type="number"
+                    placeholder="Ex: 5000"
+                    value={newDebt}
+                    onChange={e => setNewDebt(e.target.value)}
+                    style={styles.modalInput}
+                  />
+                </div>
+              )}
+
+              <button
+                onClick={handleGoalSave}
+                disabled={!selectedGoal}
+                style={{
+                  ...styles.confirmBtn,
+                  ...(!selectedGoal ? styles.buttonDisabled : {})
+                }}
+              >
+                Confirm
+              </button>
+
+              <button
+                onClick={() => {
+                  setEditingGoal(false)
+                  setSelectedGoal('')
+                  setNewDebt('')
+                }}
+                style={styles.cancelBtn}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </>
   )
 }
 

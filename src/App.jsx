@@ -15,7 +15,7 @@ function AppLayout() {
   return (
     <div className="app-layout">
       {showNavbar && <Navbar />}
-      <div className={showNavbar ? 'page-content' : ''}>
+      <div className={showNavbar ? 'ml-[220px] max-md:ml-0 max-md:mb-[60px]' : ''}>
         <Routes>
           <Route path="/" element={<Onboarding />} />
           <Route path="/dashboard" element={<Dashboard />} />

@@ -80,27 +80,27 @@ export default function Dashboard() {
 
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-xl font-semibold text-gray-900">
+        <h1 className="text-xl font-semibold text-text">
           Hello, {profile.name}! 👋
         </h1>
-        <p className="text-[13px] text-gray-400 mt-0.5">
+        <p className="text-[13px] text-text-muted mt-0.5">
           Here is your financial summary
         </p>
       </div>
 
       {/* Metric Cards */}
       <div className="grid grid-cols-3 gap-4 mb-4">
-        <div className="bg-white rounded-xl p-4 shadow-card">
-          <p className="text-[11px] text-gray-400 mb-1.5 uppercase tracking-wide">
+        <div className="bg-surface rounded-xl p-4 shadow-card border border-border">
+          <p className="text-[11px] text-text-muted mb-1.5 uppercase tracking-wide">
             Total Income
           </p>
-          <p className="text-lg font-semibold text-gray-900">
+          <p className="text-lg font-semibold text-text">
             ${totalIncome.toLocaleString()}
           </p>
         </div>
 
-        <div className="bg-danger-light rounded-xl p-4 shadow-card">
-          <p className="text-[11px] text-gray-400 mb-1.5 uppercase tracking-wide">
+        <div className="bg-danger-light rounded-xl p-4 shadow-card border border-border">
+          <p className="text-[11px] text-text-muted mb-1.5 uppercase tracking-wide">
             Total Spent
           </p>
           <p className="text-lg font-semibold text-danger">
@@ -108,8 +108,8 @@ export default function Dashboard() {
           </p>
         </div>
 
-        <div className={`rounded-xl p-4 shadow-card ${leftover < 0 ? 'bg-danger-light' : 'bg-success-light'}`}>
-          <p className="text-[11px] text-gray-400 mb-1.5 uppercase tracking-wide">
+        <div className={`rounded-xl p-4 shadow-card border border-border ${leftover < 0 ? 'bg-danger-light' : 'bg-success-light'}`}>
+          <p className="text-[11px] text-text-muted mb-1.5 uppercase tracking-wide">
             Leftover
           </p>
           <p className={`text-lg font-semibold ${leftover < 0 ? 'text-danger' : 'text-success'}`}>
@@ -126,16 +126,16 @@ export default function Dashboard() {
 
           {/* Debt Progress */}
           {totalDebt > 0 && (
-            <div className="bg-white rounded-xl p-5 shadow-card">
+            <div className="bg-surface rounded-xl p-5 shadow-card border border-border">
               <div className="flex justify-between items-center mb-2">
-                <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">
+                <p className="text-[11px] font-semibold text-text-muted uppercase tracking-wide">
                   💳 Debt Payoff Progress
                 </p>
                 <p className="text-sm font-semibold text-success">
                   {debtProgress.toFixed(1)}%
                 </p>
               </div>
-              <div className="h-2.5 bg-gray-100 rounded-full overflow-hidden mb-2">
+              <div className="h-2.5 bg-border rounded-full overflow-hidden mb-2">
                 <div
                   className="h-full bg-success rounded-full transition-all duration-500"
                   style={{ width: `${debtProgress}%` }}
@@ -149,12 +149,12 @@ export default function Dashboard() {
           )}
 
           {/* Expenses Summary */}
-          <div className="bg-white rounded-xl p-5 shadow-card">
-            <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-2">
+          <div className="bg-surface rounded-xl p-5 shadow-card border border-border">
+            <p className="text-[11px] font-semibold text-text-muted uppercase tracking-wide mb-2">
               📊 Expenses This Month
             </p>
             {expenses.length === 0 ? (
-              <p className="text-[13px] text-gray-300">No expenses recorded yet.</p>
+              <p className="text-[13px] text-text-muted/60">No expenses recorded yet.</p>
             ) : (
               Object.entries(
                 expenses.reduce((acc, e) => {
@@ -164,10 +164,10 @@ export default function Dashboard() {
               ).map(([category, amount]) => (
                 <div
                   key={category}
-                  className="flex justify-between items-center pb-2 mb-2 border-b border-gray-100 last:border-0 last:mb-0 last:pb-0"
+                  className="flex justify-between items-center pb-2 mb-2 border-b border-border last:border-0 last:mb-0 last:pb-0"
                 >
-                  <span className="text-sm text-gray-600">{category}</span>
-                  <span className="text-sm font-semibold text-gray-900">
+                  <span className="text-sm text-text-muted">{category}</span>
+                  <span className="text-sm font-semibold text-text">
                     ${amount.toFixed(2)}
                   </span>
                 </div>
@@ -181,29 +181,29 @@ export default function Dashboard() {
         <div className="flex flex-col gap-4">
 
           {/* Goal */}
-          <div className="bg-white rounded-xl p-5 shadow-card">
+          <div className="bg-surface rounded-xl p-5 shadow-card border border-border">
             <div className="flex justify-between items-center mb-1.5">
-              <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">
+              <p className="text-[11px] font-semibold text-text-muted uppercase tracking-wide">
                 Your Goal
               </p>
               <button
                 onClick={() => setEditingGoal(true)}
-                className="text-xs px-2.5 py-1 border border-gray-300 rounded-lg text-primary hover:bg-primary-light transition-colors"
+                className="text-xs px-2.5 py-1 border border-border rounded-lg text-primary hover:bg-primary-light transition-colors"
               >
                 ✏️ Change
               </button>
             </div>
-            <p className="text-sm font-medium text-gray-900">🎯 {profile.goal}</p>
+            <p className="text-sm font-medium text-text">🎯 {profile.goal}</p>
             {profile.dependents > 0 && (
-              <p className="text-[13px] text-gray-400 mt-1.5">
+              <p className="text-[13px] text-text-muted mt-1.5">
                 👨‍👩‍👧 {profile.dependents} dependent(s)
               </p>
             )}
           </div>
 
           {/* Daily Tip */}
-          <div className="bg-primary-light rounded-xl p-5 shadow-card">
-            <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-2">
+          <div className="bg-primary-light rounded-xl p-5 shadow-card border border-border">
+            <p className="text-[11px] font-semibold text-text-muted uppercase tracking-wide mb-2">
               💡 Daily Tip
             </p>
             {loadingTip ? (
@@ -222,12 +222,12 @@ export default function Dashboard() {
 
       {/* Goal Edit Modal */}
       {editingGoal && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[100] p-4">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-[380px] shadow-modal">
-            <h2 className="text-lg font-semibold text-gray-900 mb-1">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[100] p-4">
+          <div className="bg-surface rounded-2xl p-6 w-full max-w-[380px] shadow-modal border border-border">
+            <h2 className="text-lg font-semibold text-text mb-1">
               Change your goal
             </h2>
-            <p className="text-[13px] text-gray-400 mb-5">
+            <p className="text-[13px] text-text-muted mb-5">
               Your expenses and profile will be kept.
             </p>
 
@@ -244,7 +244,7 @@ export default function Dashboard() {
                   block w-full text-left p-3 mb-2 text-sm rounded-lg border transition-colors
                   ${selectedGoal === option
                     ? 'bg-primary-light border-primary text-primary font-medium'
-                    : 'bg-gray-50 border-gray-200 text-gray-900 hover:border-primary'
+                    : 'bg-bg border-border text-text hover:border-primary'
                   }
                 `}
               >
@@ -254,7 +254,7 @@ export default function Dashboard() {
 
             {selectedGoal === 'Get out of debt' && (
               <div className="mt-4">
-                <label className="block text-xs font-medium text-gray-400 uppercase tracking-wide mb-1.5">
+                <label className="block text-xs font-medium text-text-muted uppercase tracking-wide mb-1.5">
                   Add new debt amount ($) — will be added to your current debt
                 </label>
                 <input
@@ -262,7 +262,7 @@ export default function Dashboard() {
                   placeholder="Ex: 5000"
                   value={newDebt}
                   onChange={e => setNewDebt(e.target.value)}
-                  className="w-full px-4 py-2.5 text-sm rounded-lg border border-gray-300 outline-none focus:border-primary mb-4"
+                  className="w-full px-4 py-2.5 text-sm rounded-lg border border-border bg-bg text-text outline-none focus:border-primary mb-4"
                 />
               </div>
             )}
@@ -273,8 +273,8 @@ export default function Dashboard() {
               className={`
                 block w-full py-3 mb-2 text-sm font-medium rounded-lg transition-colors
                 ${selectedGoal
-                  ? 'bg-primary text-white hover:bg-primary-dark cursor-pointer'
-                  : 'bg-gray-300 text-white cursor-not-allowed'
+                  ? 'bg-primary text-black hover:bg-primary-dark cursor-pointer'
+                  : 'bg-border text-text-muted cursor-not-allowed'
                 }
               `}
             >
@@ -287,7 +287,7 @@ export default function Dashboard() {
                 setSelectedGoal('')
                 setNewDebt('')
               }}
-              className="block w-full py-3 text-sm text-gray-400 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              className="block w-full py-3 text-sm text-text-muted border border-border rounded-lg hover:bg-bg transition-colors"
             >
               Cancel
             </button>

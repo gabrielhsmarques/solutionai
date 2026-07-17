@@ -87,12 +87,12 @@ export default function Chat() {
   ]
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100">
+    <div className="flex flex-col h-screen bg-bg">
 
       {/* Header */}
-      <div className="px-8 py-4 bg-white border-b border-gray-100 flex-shrink-0 max-md:px-4">
-        <h1 className="text-base font-semibold text-gray-900">AI Educator</h1>
-        <p className="text-xs text-gray-400">Powered by Gemini</p>
+      <div className="px-8 py-4 bg-surface border-b border-border flex-shrink-0 max-md:px-4">
+        <h1 className="text-base font-semibold text-text">AI Educator</h1>
+        <p className="text-xs text-text-muted">Powered by Gemini</p>
       </div>
 
       {/* Scrollable messages area */}
@@ -104,7 +104,7 @@ export default function Chat() {
               <button
                 key={suggestion}
                 onClick={() => setInput(suggestion)}
-                className="text-left px-3.5 py-2.5 bg-white border border-gray-300 rounded-xl text-[13px] text-primary hover:bg-primary-light transition-colors"
+                className="text-left px-3.5 py-2.5 bg-surface border border-border rounded-xl text-[13px] text-primary hover:bg-primary-light transition-colors"
               >
                 {suggestion}
               </button>
@@ -119,7 +119,7 @@ export default function Chat() {
         {loading && (
           <div className="flex items-end gap-2 mb-3">
             <div className="text-xl flex-shrink-0">🤖</div>
-            <div className="bg-white rounded-2xl rounded-bl-sm px-4 py-3 shadow-card">
+            <div className="bg-surface border border-border rounded-2xl rounded-bl-sm px-4 py-3 shadow-card">
               <div className="flex gap-1.5 items-center">
                 <div className="w-[7px] h-[7px] rounded-full bg-primary animate-bounce2" />
                 <div className="w-[7px] h-[7px] rounded-full bg-primary animate-bounce2 [animation-delay:0.2s]" />
@@ -133,7 +133,7 @@ export default function Chat() {
       </div>
 
       {/* Fixed input area */}
-      <div className="flex gap-2 px-8 py-4 bg-white border-t border-gray-100 flex-shrink-0 max-md:px-4">
+      <div className="flex gap-2 px-8 py-4 bg-surface border-t border-border flex-shrink-0 max-md:px-4">
         <input
           type="text"
           placeholder="Ask your financial question..."
@@ -141,7 +141,7 @@ export default function Chat() {
           onChange={e => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
           disabled={loading}
-          className="flex-1 px-3.5 py-2.5 text-[15px] rounded-xl border border-gray-300 outline-none bg-gray-50 focus:border-primary transition-colors"
+          className="flex-1 px-3.5 py-2.5 text-[15px] rounded-xl bg-bg border border-border text-text placeholder:text-text-muted/50 outline-none focus:border-primary transition-colors"
         />
         <button
           onClick={handleSend}
@@ -149,8 +149,8 @@ export default function Chat() {
           className={`
             w-11 h-11 rounded-xl text-lg flex items-center justify-center transition-colors
             ${!input.trim() || loading
-              ? 'bg-gray-300 text-white cursor-not-allowed'
-              : 'bg-primary text-white hover:bg-primary-dark cursor-pointer'
+              ? 'bg-border text-text-muted cursor-not-allowed'
+              : 'bg-primary text-black hover:bg-primary-dark cursor-pointer'
             }
           `}
         >

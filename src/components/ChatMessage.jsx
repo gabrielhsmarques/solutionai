@@ -9,13 +9,13 @@ export default function ChatMessage({ message }) {
       )}
 
       <div className={`
-        max-w-[75%] px-3.5 py-2.5 rounded-2xl shadow-card
-        ${isUser ? 'bg-primary rounded-br-sm' : 'bg-white rounded-bl-sm'}
+        max-w-[75%] px-3.5 py-2.5 rounded-2xl shadow-card border border-border
+        ${isUser ? 'bg-primary rounded-br-sm border-primary' : 'bg-surface rounded-bl-sm'}
       `}>
-        <p className={`text-sm leading-relaxed m-0 ${isUser ? 'text-white' : 'text-gray-900'}`}>
+        <p className={`text-sm leading-relaxed m-0 ${isUser ? 'text-black' : 'text-text'}`}>
           {message.content}
         </p>
-        <p className={`text-[11px] mt-1 ${isUser ? 'text-white/60 text-right' : 'text-gray-300 text-left'}`}>
+        <p className={`text-[11px] mt-1 ${isUser ? 'text-black/50 text-right' : 'text-text-muted text-left'}`}>
           {message.time}
         </p>
       </div>

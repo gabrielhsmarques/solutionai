@@ -10,6 +10,24 @@
 
 ---
 
+## 📸 Screenshots
+
+<p align="center">
+  <img src="docs/screenshots/dashboard.png" alt="Dashboard" width="800"/>
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/onboarding.png" alt="Onboarding" width="400"/>
+  <img src="docs/screenshots/chat.png" alt="AI Educator Chat" width="400"/>
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/expenses.png" alt="Expenses" width="400"/>
+  <img src="docs/screenshots/investing.png" alt="Investing" width="400"/>
+</p>
+
+---
+
 ## 📖 About the Project
 
 **Financial Educator** was built as part of a **Digital Innovation One (DIO)** learning project, with a clear mission: help people who struggle to manage debt and income build real financial literacy — not through generic advice, but through **personalized, AI-driven guidance** based on their actual financial profile.
@@ -134,7 +152,7 @@ Desktop-first, fully responsive down to mobile breakpoints.
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/financial-educator.git
+git clone https://github.com/gabrielhsmarques/financial-educator.git
 cd financial-educator
 
 # Install dependencies
@@ -185,7 +203,10 @@ This project was built with a strong focus on **understanding**, not just shippi
 
 ## 👤 Author
 
-**Gabriel** — built as part of the [Digital Innovation One](https://www.dio.me) learning community.
+**Gabriel**  
+[GitHub](https://github.com/gabrielhsmarques) · [LinkedIn](https://www.linkedin.com/in/gabriel-marques-325014252)
+
+Built as part of the [Digital Innovation One](https://www.dio.me) learning community.
 
 ---
 
